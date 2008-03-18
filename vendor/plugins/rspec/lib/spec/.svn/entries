@@ -1,0 +1,164 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/lib/spec
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+interop
+dir
+
+story
+dir
+
+story.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+4ab3d712b369a8c7cbf667ad1e3349c8
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+rake
+dir
+
+version.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+05dca3bb88d685b206408d50c7a15ad2
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+translator.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+60e5faba8cdd949f28ffb81bfa7702b9
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+example
+dir
+
+example.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+1888abbe600172268cd019c50614853e
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+extensions
+dir
+
+extensions.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+7668881d7ccc7b13fe82d5850c487814
+2008-02-12T07:02:24.781257Z
+240
+andrew
+has-props
+
+expectations
+dir
+
+matchers
+dir
+
+matchers.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+b053febbe15d1baada0b1849ed1ad5ec
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+expectations.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+eaa26a937cfea67588c81da8651cfff8
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+runner
+dir
+
+runner.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+6f5a8674c13943efaa2734d1b18f6ac6
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+mocks
+dir
+
+mocks.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+d7ce53899cef69dd54d4fa826ff18be1
+2008-02-12T07:02:24.781257Z
+240
+andrew
+

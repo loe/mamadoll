@@ -1,0 +1,5 @@
+<ul>
+<% for page in @page %>
+  <li><%= link_to h(page.title), :action => "show", :id => page.to_param %></li>
+<% end -%>
+</ul>

@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/rails/activerecord/test/connections/native_firebird
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+connection.rb
+file
+
+
+
+
+2008-03-15T03:41:14.000000Z
+c69799122d1c609f114de66d63a72529
+2008-01-25T08:03:56.906922Z
+183
+andrew
+

@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/public/stylesheets
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-06T04:18:21.784693Z
+229
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+mamadoll.css
+file
+
+
+
+
+2008-03-15T03:41:28.000000Z
+a4fb21e6a1bc44fd9db54059b3bc5975
+2008-02-06T04:18:21.784693Z
+229
+andrew
+

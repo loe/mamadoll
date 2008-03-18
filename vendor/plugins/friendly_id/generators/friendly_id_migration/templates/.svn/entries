@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/friendly_id/generators/friendly_id_migration/templates
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-07T06:46:06.770060Z
+235
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+create_slugs.rb
+file
+
+
+
+
+2008-03-15T03:41:08.000000Z
+c5fefce8709ccc9559f1c239a7df7179
+2008-02-07T06:46:06.770060Z
+235
+andrew
+

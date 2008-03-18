@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/lib/spec/runner/formatter/story
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+html_formatter.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+f90ca2ca7a2ee2288db24d52767ad37b
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+plain_text_formatter.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+9fdfe8765b3064e4d0bf4310dfb4bf8a
+2008-02-12T07:02:24.781257Z
+240
+andrew
+

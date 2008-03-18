@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Life on the Mama Doll: <%=h @page_title %></title>
+  <meta name="description" value="On Life on the Mama Doll the show we explore the North Coast of the Caribbeam: from the Bahamas and the Florida Keys across Gulf Coast to the Yucatan." />
+  
+  <meta name="keywords" value="fishing, hunting, cooking, travel, chefs, food, exploring, gulf coast, gulf, coast, exploration, mama doll, mama, doll, Louisiana, Mississippi, Alabama, Florida, Texas, Bahamas, Florida Keys, Keys, Mexico" />
+  <%= javascript_include_tag "swfobject" %>
+	<%= stylesheet_link_tag "mamadoll", :media => "all "%>
+
+	<style type="text/css">
+	#header {
+	  background: url("/images/backgrounds/<%= 1 + rand(7) %>.jpg") repeat top left;
+	}
+	</style>
+	
+	<!--[if lt IE 7.]>
+  <script defer type="text/javascript" src="/javascripts/pngfix.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+<div id="header">
+  <div id="header-interior">
+    <a href="/"><img src="/images/title.png" height="120" width="800" alt="Life on the Mama Doll" /></a>
+  </div>
+</div>
+
+<div id="content">
+
+  <div id="main" class="column">
+    <div id="main-interior">
+      <% if flash[:notice]%><p style="color: green"><%= flash[:notice] %></p><% end -%>
+      <% if flash[:error]%><p style="color: red"><%= flash[:error] %></p><% end -%>
+           
+      <h1><%= @page_title %></h1>
+           
+      <%= yield %>
+  
+    </div>
+  </div>
+      
+  <div id="right" class="column">
+    <div id="right-interior">
+            
+      <div class="sidebar-node">
+        <h1><%= link_to "The Episodes", :controller => "episodes" %></h1>
+        <ul>
+        <% for episode in episode_list %>
+          <li><%= link_to h("Episode " + episode.id.to_s + ": " + episode.title), :controller => "episodes", :action => "show", :id => episode.to_param %></li>
+        <% end -%>
+        </ul>
+      </div>
+      
+      <div class="sidebar-node">
+        <h1><%= link_to "The People", :controller => "people" %></h1>
+        <ul>
+        <% for person in people_list %>
+          <li><%= link_to h(person.name), :controller => "people", :action => "show", :id => person.to_param %></li>
+        <% end -%>
+        </ul>
+      </div>
+      
+      <% for page in page_list %>
+      <div class="sidebar-node">
+        <h1><%= link_to h(page.title), :controller => "pages", :action => "show", :id => page.to_param %></h1>
+      </div>
+      <% end -%>
+            
+    </div>
+  </div>
+</div>
+  
+<div id="footer">
+  <div id="footer-interior">
+    &copy; 2006-2008 Lugger Films
+  </div>
+</div>
+  
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+  _uacct = "UA-1702281-2";
+  urchinTracker();
+</script>
+
+<script type="text/javascript" src="http://include.reinvigorate.net/re_.js">
+</script>
+<script type="text/javascript">
+  re_("897c4-894tnvlib6");
+</script>
+
+</body>
+</html>

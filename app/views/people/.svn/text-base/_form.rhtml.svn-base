@@ -1,0 +1,14 @@
+<p><label for="person_name">Name</label><br/>
+<%= text_field "person", "name", :size => 20  %></p>
+
+<p><label for="person_image_url">Image URL</label><br/>
+<%= text_field "person", "image_url", :size => 20  %></p>
+
+<p><label for="person_name">Image Height</label><br/>
+<%= text_field "person", "image_height", :size => 5  %></p>
+
+<p><label for="person_name">Image Width</label><br/>
+<%= text_field "person", "image_width", :size => 5  %></p>
+
+<p><label for="person_profile">Profile</label><br/>
+<%= text_area "person", "profile", :cols => 100, :rows => 30  %></p>

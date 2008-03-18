@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/app/views/account
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-31T10:08:49.861589Z
+222
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+login.rhtml
+file
+
+
+
+
+2008-03-15T03:41:07.000000Z
+f6bfdf96d63c6c568941c34aebc30d55
+2008-01-31T10:08:49.861589Z
+222
+andrew
+

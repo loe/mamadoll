@@ -1,0 +1,5 @@
+<ul>
+<% for episode in @episodes %>
+  <li><%= link_to h(episode.title), :action => "show", :id => episode.to_param %></li>
+<% end -%>
+</ul>

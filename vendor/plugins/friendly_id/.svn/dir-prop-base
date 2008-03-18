@@ -1,0 +1,17 @@
+K 21
+piston:local-revision
+V 3
+240
+K 22
+piston:remote-revision
+V 2
+20
+K 11
+piston:root
+V 42
+http://svn.randomba.org/friendly_id/trunk/
+K 11
+piston:uuid
+V 36
+ea912711-22be-dc11-9221-0002b3ee6c52
+END

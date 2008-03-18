@@ -1,0 +1,10 @@
+<p><label for="episode_title">Title</label><br/>
+<%= text_field "episode", "title", :size => 20  %></p>
+
+<p><label for="episode_people">People</label><br/>
+<% for person in @people %>
+<%= check_box_tag 'people[]', person.id, person.appears_in?(@episode) %> <%=h person.name %><br/> 
+<% end -%></p>
+
+<p><label for="episode_body">Body</label><br/>
+<%= text_area "episode", "body", :cols => 100, :rows => 30  %></p>

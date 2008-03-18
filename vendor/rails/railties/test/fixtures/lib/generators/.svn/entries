@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/rails/railties/test/fixtures/lib/generators
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+missing_generator
+dir
+
+working
+dir
+
+missing_templates
+dir
+
+missing_class
+dir
+

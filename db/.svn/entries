@@ -1,0 +1,43 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/db
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-07T06:46:06.770060Z
+235
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+schema.rb
+file
+
+
+
+
+2008-03-15T03:41:07.000000Z
+deec18f1453028b78aeb9f6804f26675
+2008-02-07T06:46:06.770060Z
+235
+andrew
+
+migrate
+dir
+

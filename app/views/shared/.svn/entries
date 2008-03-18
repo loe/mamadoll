@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/app/views/shared
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-29T03:51:35.708936Z
+219
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+_comment_form.rhtml
+file
+
+
+
+
+2008-03-15T03:41:07.000000Z
+003e17b0d277f93ea7b17cb3d95ba4b0
+2008-01-29T03:51:35.708936Z
+219
+andrew
+

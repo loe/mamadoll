@@ -1,0 +1,9 @@
+<% form_tag :controller => 'account', :action => 'login' do -%>
+<table>
+<tr>
+  <th>Password:</th><td><%= password_field "account", "password", :size => 20 %></td>
+</tr>
+<tr>
+  <th></th><td><%= submit_tag "Login" %>
+</table>
+<% end -%>

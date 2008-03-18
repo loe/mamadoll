@@ -1,0 +1,4 @@
+<% form_tag :action => "update", :id => @person.to_param do -%>
+  <%= render :partial => "form" %>
+  <%= submit_tag "Update" %>
+<% end -%>

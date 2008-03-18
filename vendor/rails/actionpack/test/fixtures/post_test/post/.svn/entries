@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/rails/actionpack/test/fixtures/post_test/post
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+index.iphone.erb
+file
+
+
+
+
+2008-03-15T03:41:18.000000Z
+9d2a071f6bb095ecb35babcd8a84f4ae
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+index.html.erb
+file
+
+
+
+
+2008-03-15T03:41:18.000000Z
+60e2514e14358183d8280dc930d9a0c2
+2008-01-25T08:03:56.906922Z
+183
+andrew
+

@@ -1,0 +1,18 @@
+<% form_tag :controller => 'comments', :action => 'create', :id => params[:id] do -%>
+
+<h2>Add a comment:</h2>
+<table>
+<tr>
+  <th>Name:</th><td><%= text_field("comment", "author", :size => 20) %></td>
+</tr>
+<tr>
+  <th>Email:</th><td><%= text_field("comment", "email", :size => 20) %></td>
+</tr>
+<tr>
+  <th valign="top">Comment:</th><td><%= text_area("comment", "body", :cols => 19, :rows => 5) %></td>
+</tr>
+<tr>
+  <th><input type="hidden" name="comment[episode_id]" value="<%=@episode.id %>" /></th><td><%= submit_tag "Say it!" %></td>
+</tr>
+</table>
+<% end -%>

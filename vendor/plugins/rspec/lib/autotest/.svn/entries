@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/lib/autotest
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+discover.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+0eed8166bd4b13ef4eb130b96f3e2ebc
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+rspec.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+0d1734994ed704fe73b4190e832f3484
+2008-02-12T07:02:24.781257Z
+240
+andrew
+

@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/stories/resources/stories
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+failing_story.rb
+file
+
+
+
+
+2008-03-15T03:41:09.000000Z
+2edbbd92daa9d2bf493ac094286edbd4
+2008-02-12T07:02:24.781257Z
+240
+andrew
+

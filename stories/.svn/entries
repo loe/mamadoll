@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/stories
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-07T06:46:06.770060Z
+235
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+helper.rb
+file
+
+
+
+
+2008-03-15T03:41:07.000000Z
+ec380a3c35a6408a904a7f6ffbace5b5
+2008-02-07T06:46:06.770060Z
+235
+andrew
+
+all.rb
+file
+
+
+
+
+2008-03-15T03:41:07.000000Z
+8d15fdde162b26404e6dff0f2c896293
+2008-02-07T06:46:06.770060Z
+235
+andrew
+

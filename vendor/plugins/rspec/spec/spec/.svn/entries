@@ -1,0 +1,91 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/spec/spec
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+extensions
+dir
+
+interop
+dir
+
+story
+dir
+
+runner_spec.rb
+file
+
+
+
+
+2008-03-15T03:41:09.000000Z
+17c2deb89420a08cae2e1ad0ad0c79ba
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+translator_spec.rb
+file
+
+
+
+
+2008-03-15T03:41:09.000000Z
+38b51768bd5bf541e189e92213efeec2
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+expectations
+dir
+
+matchers
+dir
+
+runner
+dir
+
+spec_classes.rb
+file
+
+
+
+
+2008-03-15T03:41:09.000000Z
+d117bbde1949673089d3944f95409a9a
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+example
+dir
+
+package
+dir
+
+mocks
+dir
+

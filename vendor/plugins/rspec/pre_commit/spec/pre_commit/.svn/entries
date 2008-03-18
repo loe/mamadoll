@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/pre_commit/spec/pre_commit
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+pre_commit_spec.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+417c222858e470ae184ff41078ce17ee
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+rspec_on_rails_spec.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+6fec90bddb0d48ef731678b64898d7b4
+2008-02-12T07:02:24.781257Z
+240
+andrew
+

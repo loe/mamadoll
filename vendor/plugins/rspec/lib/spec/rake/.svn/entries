@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/lib/spec/rake
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+spectask.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+ef6a454bd881373256c71583318b4619
+2008-02-12T07:02:24.781257Z
+240
+andrew
+
+verify_rcov.rb
+file
+
+
+
+
+2008-03-15T03:41:10.000000Z
+fee5b1b6f8c6724e94a4074cb95a0e0b
+2008-02-12T07:02:24.781257Z
+240
+andrew
+

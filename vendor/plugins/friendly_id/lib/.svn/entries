@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/friendly_id/lib
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-12T07:06:57.678148Z
+242
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+friendly_id.rb
+file
+
+
+
+
+2008-03-15T03:41:08.000000Z
+62125e7927e3e689a33a8553b245b787
+2008-02-07T17:10:08.558343Z
+236
+andrew
+
+slug.rb
+file
+
+
+
+
+2008-03-15T03:41:08.000000Z
+85e24bd625910ced377109646efa00f1
+2008-02-12T07:06:57.678148Z
+242
+andrew
+

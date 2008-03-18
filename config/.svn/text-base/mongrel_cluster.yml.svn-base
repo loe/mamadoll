@@ -1,0 +1,9 @@
+--- 
+user: andrew
+group: andrew
+cwd: /var/www/mamadoll.tv/current
+address: 127.0.0.1
+port: "8400"
+environment: production
+pid_file: log/mongrel.pid
+servers: 2

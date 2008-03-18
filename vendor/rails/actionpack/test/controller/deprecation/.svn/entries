@@ -1,0 +1,40 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/rails/actionpack/test/controller/deprecation
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+deprecated_base_methods_test.rb
+file
+
+
+
+
+2008-03-15T03:41:17.000000Z
+22927c1604f168fffe6b3e44b52a9a2e
+2008-01-25T08:03:56.906922Z
+183
+andrew
+

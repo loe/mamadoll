@@ -1,0 +1,5 @@
+<ul>
+<% for person in @people %>
+  <li><%= link_to h(person.name), :action => "show", :id => person.to_param %></li>
+<% end -%>
+</ul>

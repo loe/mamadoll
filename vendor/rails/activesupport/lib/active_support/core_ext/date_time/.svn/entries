@@ -1,0 +1,52 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/vendor/rails/activesupport/lib/active_support/core_ext/date_time
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+calculations.rb
+file
+
+
+
+
+2008-03-15T03:41:14.000000Z
+57cab90955f416ae317230a765745f69
+2008-01-25T08:03:56.906922Z
+183
+andrew
+
+conversions.rb
+file
+
+
+
+
+2008-03-15T03:41:14.000000Z
+d6533861db93e3572f76e03191d8f34c
+2008-01-25T08:03:56.906922Z
+183
+andrew
+

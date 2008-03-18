@@ -1,0 +1,41 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/public/embeds
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-02-06T02:06:17.849795Z
+226
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+mediaplayer.swf
+file
+
+
+
+
+2008-03-15T03:41:24.000000Z
+2d038b3ce86030357c710cee46c7f18d
+2008-02-06T02:06:17.849795Z
+226
+andrew
+has-props
+

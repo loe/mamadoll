@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Life on the Mama Doll: Blast and Cast with Galatoire's Bistro</title>
+	<style type="text/css">
+  
+  body {
+    font-family: georgia, times;
+    font-weight: normal;
+    text-align: left;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    min-width: 800px;      /* 2x LC width + RC width */
+  }
+  
+  #header { 
+    margin: 0; 
+    padding: 0;
+    height: 120px;
+    background: url("images/banners/banner-5.jpg") no-repeat top left;
+  }
+  
+  #header #interior {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    border-bottom: 1px solid #2e2e2e;
+  }
+  
+  #header img {
+    border: 0;
+    margin: 0;
+  }
+  
+  #content {
+    padding: 0 175px 0 0;
+  }
+  
+  #content .column {
+    position: relative;
+    float: left;
+  }
+  
+  #center {
+    width: 100%;
+  }
+  
+  #center #interior {
+    padding: 5px;
+  }
+  
+  #right {
+    width: 175px;          /* RC width */
+    margin-right: -175px;  /* RC width */
+  }
+  
+  #right #interior {
+    padding: 5px;
+    border-left: 1px dotted #2e2e2e;
+  }
+  
+  .sidebar-node ul {
+    list-style-type: none; 
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-node li { 
+    margin: 0;
+    padding: 1px 0 0 4px;
+  }
+  
+  #footer {
+    clear: both;
+  }
+  
+  #footer #interior {
+    text-align: center;
+    font-size: 10px;
+    padding: 5px;
+  }
+  
+  a:link,
+  a:visited { 
+    color: #000;
+    text-decoration: underline;
+  }
+
+  a:hover,
+  a:active {
+    color: #f2a234;
+    text-decoration: underline;
+  }
+  
+  h1 {
+    font: bold 28px;
+    margin: 0;
+  }
+  
+  h2 {
+    font: bold 20px;
+    margin: 0;
+  }
+  
+  h3 {
+    font: bold 16px;
+    margin: 0;
+  }
+  
+  #content img {
+    border: 0;
+    margin: 5px;
+  }
+
+	</style>
+
+</head>
+<body>
+
+  <div id="header">
+    <div id="interior">
+      <a href="/"><img src="images/title.png" height="120" width="800" alt="Life on the Mama Doll" /></a>
+    </div>
+  </div>
+  
+  <div id="content">
+      
+      <div id="center" class="column">
+        <div id="interior">
+          <h1>Blast and Cast with Galatoire's Bistro</h1>
+          <img src="images/1/will_loe.png" height="240" width="320" alt="Will Loe" align="right" border="0" />
+          <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris est. Nulla quis lacus. Quisque sodales mattis risus. Morbi feugiat nunc sed purus suscipit mollis. Sed ullamcorper scelerisque nisi. Donec ultrices faucibus tellus. Aenean pharetra. Sed non ipsum. Suspendisse tempor porta nulla. Suspendisse metus dolor, feugiat vel, varius a, tincidunt in, purus. Aenean vitae tellus faucibus purus feugiat pretium. Duis vel urna. Proin adipiscing turpis at massa. Donec ullamcorper, purus ac ornare malesuada, ligula arcu accumsan quam, quis scelerisque ipsum quam id urna. Maecenas nec orci. Sed pretium, urna non varius dapibus, ipsum sapien rhoncus velit, faucibus commodo nisi nunc nonummy nisl. Pellentesque massa erat, lobortis et, gravida sed, faucibus non, est. Proin nunc metus, congue id, pharetra a, consequat id, justo. Nam fermentum ipsum in nisl. Maecenas pulvinar tortor sit amet dui.</p>
+
+          <p>Ut sollicitudin eleifend erat. Aenean sit amet mauris quis sapien hendrerit molestie. Vivamus congue. Aenean vestibulum. Suspendisse porta ullamcorper ligula. Sed quis nunc. Suspendisse mauris magna, euismod quis, dignissim vel, varius sed, arcu. Nunc pede justo, scelerisque id, accumsan nec, ornare sed, ipsum. Sed viverra metus eget lacus. Aenean dignissim sollicitudin est. Nam rutrum lorem non justo. Aliquam elementum purus. Cras sed nisi. Aliquam erat volutpat. Aenean tincidunt aliquam felis. Nunc luctus. Suspendisse nec odio ut ligula euismod varius. Fusce vel pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In mi justo, laoreet ut, luctus non, hendrerit nec, lorem.</p>
+
+          <p>Aliquam commodo ultrices leo. Donec ut lorem id augue volutpat congue. Nullam laoreet sapien a mauris. Curabitur sagittis ante quis ipsum. Quisque ornare orci a pede malesuada mattis. Fusce ornare, ante in porttitor rutrum, nibh turpis tempor felis, sed iaculis tellus turpis at ligula. Fusce eu tortor. Suspendisse sit amet risus eget elit consequat ornare. Vivamus porta. Vestibulum mauris. Curabitur pulvinar dignissim diam. Sed malesuada lorem at eros. Suspendisse cursus, quam sit amet viverra molestie, risus justo dignissim magna, a sollicitudin mauris leo eget metus. Aliquam erat volutpat. In hac habitasse platea dictumst. Vestibulum vehicula, lacus nec lacinia congue, risus libero tristique diam, in interdum leo massa at enim. Nam mauris ante, blandit id, luctus vel, sollicitudin sit amet, mi. Vestibulum sodales. Donec malesuada diam id nunc. Pellentesque vestibulum, massa at aliquam consectetuer, nisl urna fringilla tortor, eu tincidunt diam elit at nisl.</p>
+    
+          <h2>People</h2>
+          <ul>
+            <li>Will Loe</li>
+            <li>Brian Landry</li>
+            <li>Cool Dude</li>
+          </ul>
+          <h2>Recipes</h2>
+          <ul>
+            <li>Trout Amandine</li>
+            <li>Tasty Teal</li>
+            <li>Redfish on the Halfshell</li>
+          </ul>
+          <h2>Equipment</h2>
+          <ul>
+            <li>Hell's Bay 18'</li>
+          </ul>
+          <h2>Comments</h2>
+          <ul>
+            <li>Cool</li>
+            <li>Rad</li>
+            <li>Epic</li>
+          </ul>
+          
+        </div>
+      </div>
+      
+      <div id="right" class="column">
+        <div id="interior">
+          <div class="sidebar-node">
+            <h3><a href="/">Life on the Mama Doll</a></h3>
+          </div>
+          <div class="sidebar-node">
+            <h3>Season 1</h3>
+            <ul>
+              <li><a href="/episodes/1">Episode 1: Blast and Cast with Galatoire's</a></li>
+              <li>Episode 2: Madison Wooden Boat Festival</li>
+            </ul>
+          </div>
+          <div class="sidebar-node">
+            <h3>Associates</h3>
+            <ul>
+              <li><a href="http://www.sovereignpictures.com/">Sovereign Pictures</a></li>
+            </ul>
+          </div>
+          <div class="sidebar-node">
+            <h3>People</h3>
+            <ul>
+              <li><a href="http://www.captainandythompson.com/">Captain Andy Thompson</a></li>
+              <li><a href="http://www.galatoires.com/">Galatoire's Restauraunt</a></li>
+              <li><a href="http://www.uklabs.com/">Wildrose Kennels</a></li>
+              <li>Bill Holland Boatworks</li>
+            </ul>
+          </div>
+          <div class="sidebar-node">
+            <h3>Equipment</h3>
+            <ul>
+              <li><a href="http://www.hellsbayboatworks.com/">Hell's Bay Boatworks</a></li>
+              <li><a href="http://www.mercurymarine.com/">Mercury Marine</a></li>
+              <li><a href="http://www.honda-marine.com/">Honda Marine</a></li>
+              <li><a href="http://www.thomasandthomas.com/">Thomas &amp; Thomas Rods</a></li>
+              <li><a href="http://abelreels.com/">Abel Fly Reels</a></li>
+              <li><a href="http://www.bauerflyreel.com/">Bauer Fly Reels</a></li>
+              <li><a href="http://fish.shimano.com/">Shimano Fishing</a></li>
+              <li><a href="http://www.stiffypushpoles.com/">Stiffy Push Poles</a></li>
+              <li><a href="http://www.berettausa.com/">Beretta</a></li>
+              <li><a href="http://www.cabelas.com/">Cabela's</a></li>
+              <li><a href="http://www.furuno.com/">Furuno</a></li>
+              <li><a href="http://www.interphase-tech.com/">Interphase Technologies</a></li>
+              <li><a href="http://www.icomamerica.com/">Icom</a></li>
+              <li><a href="http://www.pentax.com/">Pentax</a></li>
+              <li><a href="http://www.fortressanchors.com/">Fortress Anchors</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+  </div>
+  
+  <div id="footer">
+    <div id="interior">
+      &copy; 2006-2008 Lugger Films
+    </div>
+  </div>
+  
+
+</body>
+</html>

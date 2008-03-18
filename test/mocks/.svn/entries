@@ -1,0 +1,34 @@
+8
+
+dir
+248
+svn+ssh://switch/var/svn/projects/mamadoll/test/mocks
+svn+ssh://switch/var/svn/projects
+
+
+
+2008-01-18T21:10:08.009336Z
+169
+andrew
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+40cb1436-730a-0410-bfb6-8e823e0ef0e7
+
+test
+dir
+
+development
+dir
+
