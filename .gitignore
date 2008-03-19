@@ -1,0 +1,5 @@
+config/database.yml
+config/deploy.rb
+log
+tmp
+.DS_Store
