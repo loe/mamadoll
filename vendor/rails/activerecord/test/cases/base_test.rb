@@ -1,6 +1,8 @@
 require "cases/helper"
+require 'models/author'
 require 'models/topic'
 require 'models/reply'
+require 'models/category'
 require 'models/company'
 require 'models/customer'
 require 'models/developer'
@@ -11,6 +13,7 @@ require 'models/column_name'
 require 'models/subscriber'
 require 'models/keyboard'
 require 'models/post'
+require 'models/comment'
 require 'models/minimalistic'
 require 'models/warehouse_thing'
 require 'rexml/document'
@@ -72,7 +75,7 @@ class TopicWithProtectedContentAndAccessibleAuthorName < ActiveRecord::Base
 end
 
 class BasicsTest < ActiveRecord::TestCase
-  fixtures :topics, :companies, :developers, :projects, :computers, :accounts, :minimalistics, 'warehouse-things'
+  fixtures :topics, :companies, :developers, :projects, :computers, :accounts, :minimalistics, 'warehouse-things', :authors
 
   def test_table_exists
     assert !NonExistentTable.table_exists?
@@ -125,6 +128,24 @@ class BasicsTest < ActiveRecord::TestCase
     assert_equal(%w( one two three ), Topic.find(topic.id).content)
   end
 
+  def test_read_attributes_before_type_cast
+    category = Category.new({:name=>"Test categoty", :type => nil})
+    category_attrs = {"name"=>"Test categoty", "type" => nil}
+    assert_equal category_attrs , category.attributes_before_type_cast
+  end
+  
+  if current_adapter?(:MysqlAdapter)
+    def test_read_attributes_before_type_cast_on_boolean
+      bool = Booleantest.create({ "value" => false })
+      assert_equal 0, bool.attributes_before_type_cast["value"]
+    end
+  end
+  
+  def test_read_attributes_before_type_cast_on_datetime
+    developer = Developer.find(:first)
+    assert_equal developer.created_at.to_s(:db) , developer.attributes_before_type_cast["created_at"]
+  end
+  
   def test_hash_content
     topic = Topic.new
     topic.content = { "one" => 1, "two" => 2 }
@@ -132,6 +153,7 @@ class BasicsTest < ActiveRecord::TestCase
 
     assert_equal 2, Topic.find(topic.id).content["two"]
 
+    topic.content_will_change!
     topic.content["three"] = 3
     topic.save
 
@@ -229,6 +251,27 @@ class BasicsTest < ActiveRecord::TestCase
     topic = Topic.create("title" => "New Topic")
     topicReloaded = Topic.find(topic.id)
     assert_equal(topic, topicReloaded)
+  end  
+
+  def test_create_through_factory_with_block
+    topic = Topic.create("title" => "New Topic") do |t|
+      t.author_name = "David"
+    end
+    topicReloaded = Topic.find(topic.id)
+    assert_equal("New Topic", topic.title)
+    assert_equal("David", topic.author_name)
+  end
+
+  def test_create_many_through_factory_with_block
+    topics = Topic.create([ { "title" => "first" }, { "title" => "second" }]) do |t|
+      t.author_name = "David"
+    end
+    assert_equal 2, topics.size
+    topic1, topic2 = Topic.find(topics[0].id), Topic.find(topics[1].id)
+    assert_equal "first", topic1.title
+    assert_equal "David", topic1.author_name
+    assert_equal "second", topic2.title
+    assert_equal "David", topic2.author_name
   end
 
   def test_update
@@ -459,7 +502,7 @@ class BasicsTest < ActiveRecord::TestCase
 
   def test_load
     topics = Topic.find(:all, :order => 'id')
-    assert_equal(2, topics.size)
+    assert_equal(4, topics.size)
     assert_equal(topics(:first).title, topics.first.title)
   end
 
@@ -531,10 +574,11 @@ class BasicsTest < ActiveRecord::TestCase
   end
 
   def test_destroy_all
-    assert_equal 2, Topic.count
-
-    Topic.destroy_all "author_name = 'Mary'"
-    assert_equal 1, Topic.count
+    original_count = Topic.count
+    topics_by_mary = Topic.count(:conditions => mary = "author_name = 'Mary'")
+    
+    Topic.destroy_all mary
+    assert_equal original_count - topics_by_mary, Topic.count
   end
 
   def test_destroy_many
@@ -544,8 +588,9 @@ class BasicsTest < ActiveRecord::TestCase
   end
 
   def test_delete_many
-    Topic.delete([1, 2])
-    assert_equal 0, Topic.count
+    original_count = Topic.count
+    Topic.delete(deleting = [1, 2])
+    assert_equal original_count - deleting.size, Topic.count
   end
 
   def test_boolean_attributes
@@ -570,21 +615,21 @@ class BasicsTest < ActiveRecord::TestCase
   end
 
   def test_update_all
-    assert_equal 2, Topic.update_all("content = 'bulk updated!'")
+    assert_equal Topic.count, Topic.update_all("content = 'bulk updated!'")
     assert_equal "bulk updated!", Topic.find(1).content
     assert_equal "bulk updated!", Topic.find(2).content
 
-    assert_equal 2, Topic.update_all(['content = ?', 'bulk updated again!'])
+    assert_equal Topic.count, Topic.update_all(['content = ?', 'bulk updated again!'])
     assert_equal "bulk updated again!", Topic.find(1).content
     assert_equal "bulk updated again!", Topic.find(2).content
 
-    assert_equal 2, Topic.update_all(['content = ?', nil])
+    assert_equal Topic.count, Topic.update_all(['content = ?', nil])
     assert_nil Topic.find(1).content
   end
 
   def test_update_all_with_hash
     assert_not_nil Topic.find(1).last_read
-    assert_equal 2, Topic.update_all(:content => 'bulk updated with hash!', :last_read => nil)
+    assert_equal Topic.count, Topic.update_all(:content => 'bulk updated with hash!', :last_read => nil)
     assert_equal "bulk updated with hash!", Topic.find(1).content
     assert_equal "bulk updated with hash!", Topic.find(2).content
     assert_nil Topic.find(1).last_read
@@ -619,7 +664,9 @@ class BasicsTest < ActiveRecord::TestCase
   end
 
   def test_delete_all
-    assert_equal 2, Topic.delete_all
+    assert Topic.count > 0
+    
+    assert_equal Topic.count, Topic.delete_all
   end
 
   def test_update_by_condition
@@ -786,17 +833,17 @@ class BasicsTest < ActiveRecord::TestCase
 
   def test_update_attributes!
     reply = Reply.find(2)
-    assert_equal "The Second Topic's of the day", reply.title
+    assert_equal "The Second Topic of the day", reply.title
     assert_equal "Have a nice day", reply.content
 
-    reply.update_attributes!("title" => "The Second Topic's of the day updated", "content" => "Have a nice evening")
+    reply.update_attributes!("title" => "The Second Topic of the day updated", "content" => "Have a nice evening")
     reply.reload
-    assert_equal "The Second Topic's of the day updated", reply.title
+    assert_equal "The Second Topic of the day updated", reply.title
     assert_equal "Have a nice evening", reply.content
 
-    reply.update_attributes!(:title => "The Second Topic's of the day", :content => "Have a nice day")
+    reply.update_attributes!(:title => "The Second Topic of the day", :content => "Have a nice day")
     reply.reload
-    assert_equal "The Second Topic's of the day", reply.title
+    assert_equal "The Second Topic of the day", reply.title
     assert_equal "Have a nice day", reply.content
 
     assert_raise(ActiveRecord::RecordInvalid) { reply.update_attributes!(:title => nil, :content => "Have a nice evening") }
@@ -877,7 +924,7 @@ class BasicsTest < ActiveRecord::TestCase
   end
 
   def test_readonly_attributes
-    assert_equal Set.new([ 'title' ]), ReadonlyTitlePost.readonly_attributes
+    assert_equal Set.new([ 'title' , 'comments_count' ]), ReadonlyTitlePost.readonly_attributes
 
     post = ReadonlyTitlePost.create(:title => "cannot change this", :body => "changeable")
     post.reload
@@ -922,6 +969,84 @@ class BasicsTest < ActiveRecord::TestCase
     topic = Topic.find(1)
     topic.attributes = attributes
     assert_equal Time.local(2004, 6, 24, 16, 24, 0), topic.written_on
+  end
+  
+  def test_multiparameter_attributes_on_time_with_old_date
+    attributes = {
+      "written_on(1i)" => "1850", "written_on(2i)" => "6", "written_on(3i)" => "24",
+      "written_on(4i)" => "16", "written_on(5i)" => "24", "written_on(6i)" => "00"
+    }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    # testing against to_s(:db) representation because either a Time or a DateTime might be returned, depending on platform
+    assert_equal "1850-06-24 16:24:00", topic.written_on.to_s(:db)
+  end
+
+  def test_multiparameter_attributes_on_time_with_utc
+    ActiveRecord::Base.default_timezone = :utc
+    attributes = {
+      "written_on(1i)" => "2004", "written_on(2i)" => "6", "written_on(3i)" => "24",
+      "written_on(4i)" => "16", "written_on(5i)" => "24", "written_on(6i)" => "00"
+    }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    assert_equal Time.utc(2004, 6, 24, 16, 24, 0), topic.written_on
+  ensure
+    ActiveRecord::Base.default_timezone = :local
+  end
+
+  def test_multiparameter_attributes_on_time_with_time_zone_aware_attributes
+    ActiveRecord::Base.time_zone_aware_attributes = true
+    ActiveRecord::Base.default_timezone = :utc
+    Time.zone = TimeZone[-28800]
+    attributes = {
+      "written_on(1i)" => "2004", "written_on(2i)" => "6", "written_on(3i)" => "24",
+      "written_on(4i)" => "16", "written_on(5i)" => "24", "written_on(6i)" => "00"
+    }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    assert_equal Time.utc(2004, 6, 24, 23, 24, 0), topic.written_on
+    assert_equal Time.utc(2004, 6, 24, 16, 24, 0), topic.written_on.time
+    assert_equal Time.zone, topic.written_on.time_zone
+  ensure
+    ActiveRecord::Base.time_zone_aware_attributes = false
+    ActiveRecord::Base.default_timezone = :local
+    Time.zone = nil
+  end
+
+  def test_multiparameter_attributes_on_time_with_time_zone_aware_attributes_false
+    ActiveRecord::Base.time_zone_aware_attributes = false
+    Time.zone = TimeZone[-28800]
+    attributes = {
+      "written_on(1i)" => "2004", "written_on(2i)" => "6", "written_on(3i)" => "24",
+      "written_on(4i)" => "16", "written_on(5i)" => "24", "written_on(6i)" => "00"
+    }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    assert_equal Time.local(2004, 6, 24, 16, 24, 0), topic.written_on
+    assert_equal false, topic.written_on.respond_to?(:time_zone)
+  ensure
+    Time.zone = nil
+  end
+
+  def test_multiparameter_attributes_on_time_with_skip_time_zone_conversion_for_attributes
+    ActiveRecord::Base.time_zone_aware_attributes = true
+    ActiveRecord::Base.default_timezone = :utc
+    Time.zone = TimeZone[-28800]
+    Topic.skip_time_zone_conversion_for_attributes = [:written_on]
+    attributes = {
+      "written_on(1i)" => "2004", "written_on(2i)" => "6", "written_on(3i)" => "24",
+      "written_on(4i)" => "16", "written_on(5i)" => "24", "written_on(6i)" => "00"
+    }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    assert_equal Time.utc(2004, 6, 24, 16, 24, 0), topic.written_on
+    assert_equal false, topic.written_on.respond_to?(:time_zone)
+  ensure
+    ActiveRecord::Base.time_zone_aware_attributes = false
+    ActiveRecord::Base.default_timezone = :local
+    Time.zone = nil
+    Topic.skip_time_zone_conversion_for_attributes = []
   end
 
   def test_multiparameter_attributes_on_time_with_empty_seconds
@@ -1518,6 +1643,41 @@ class BasicsTest < ActiveRecord::TestCase
     end
   end
 
+  def test_find_last
+    last  = Developer.find :last
+    assert_equal last, Developer.find(:first, :order => 'id desc')
+  end
+  
+  def test_last
+    assert_equal Developer.find(:first, :order => 'id desc'), Developer.last
+  end
+
+  def test_all_with_conditions
+    assert_equal Developer.find(:all, :order => 'id desc'), Developer.all(:order => 'id desc')
+  end
+  
+  def test_find_ordered_last
+    last  = Developer.find :last, :order => 'developers.salary ASC'
+    assert_equal last, Developer.find(:all, :order => 'developers.salary ASC').last
+  end
+
+  def test_find_reverse_ordered_last
+    last  = Developer.find :last, :order => 'developers.salary DESC'
+    assert_equal last, Developer.find(:all, :order => 'developers.salary DESC').last
+  end
+
+  def test_find_multiple_ordered_last
+    last  = Developer.find :last, :order => 'developers.name, developers.salary DESC'
+    assert_equal last, Developer.find(:all, :order => 'developers.name, developers.salary DESC').last
+  end
+  
+  def test_find_scoped_ordered_last
+    last_developer = Developer.with_scope(:find => { :order => 'developers.salary ASC' }) do
+      Developer.find(:last)
+    end
+    assert_equal last_developer, Developer.find(:all, :order => 'developers.salary ASC').last
+  end
+  
   def test_abstract_class
     assert !ActiveRecord::Base.abstract_class?
     assert LoosePerson.abstract_class?
@@ -1569,7 +1729,7 @@ class BasicsTest < ActiveRecord::TestCase
     old_class = LooseDescendant
     Object.send :remove_const, :LooseDescendant
 
-    descendant = old_class.create!
+    descendant = old_class.create! :first_name => 'bob'
     assert_not_nil LoosePerson.find(descendant.id), "Should have found instance of LooseDescendant when finding abstract LoosePerson: #{descendant.inspect}"
   ensure
     unless Object.const_defined?(:LooseDescendant)
@@ -1645,7 +1805,7 @@ class BasicsTest < ActiveRecord::TestCase
     xml = topics(:first).to_xml(:indent => 0, :skip_instruct => true, :include => :replies, :except => :replies_count)
     assert_equal "<topic>", xml.first(7)
     assert xml.include?(%(<replies type="array"><reply>))
-    assert xml.include?(%(<title>The Second Topic's of the day</title>))
+    assert xml.include?(%(<title>The Second Topic of the day</title>))
   end
 
   def test_array_to_xml_including_has_many_association
@@ -1711,23 +1871,6 @@ class BasicsTest < ActiveRecord::TestCase
     end
     assert_equal "<company>", xml.first(9)
     assert xml.include?(%(<arbitrary-element>#{value}</arbitrary-element>))
-  end
-
-  def test_except_attributes
-    assert_equal(
-      %w( author_name type id approved replies_count bonus_time written_on content author_email_address parent_id last_read).sort,
-      topics(:first).attributes(:except => :title).keys.sort
-    )
-
-    assert_equal(
-      %w( replies_count bonus_time written_on content author_email_address parent_id last_read).sort,
-      topics(:first).attributes(:except => [ :title, :id, :type, :approved, :author_name ]).keys.sort
-    )
-  end
-
-  def test_include_attributes
-    assert_equal(%w( title ), topics(:first).attributes(:only => :title).keys)
-    assert_equal(%w( title author_name type id approved ).sort, topics(:first).attributes(:only => [ :title, :id, :type, :approved, :author_name ]).keys.sort)
   end
 
   def test_type_name_with_module_should_handle_beginning

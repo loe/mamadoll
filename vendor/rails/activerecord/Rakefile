@@ -4,6 +4,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
+require 'rake/contrib/sshpublisher'
 
 require File.join(File.dirname(__FILE__), 'lib', 'active_record', 'version')
 require File.expand_path(File.dirname(__FILE__)) + "/test/config"
@@ -17,6 +18,8 @@ RELEASE_NAME  = "REL #{PKG_VERSION}"
 
 RUBY_FORGE_PROJECT = "activerecord"
 RUBY_FORGE_USER    = "webster132"
+
+MYSQL_DB_USER = 'rails'
 
 PKG_FILES = FileList[
     "lib/**/*", "test/**/*", "examples/**/*", "doc/**/*", "[A-Z]*", "install.rb", "Rakefile"
@@ -33,7 +36,7 @@ for adapter in %w( mysql postgresql sqlite sqlite3 firebird db2 oracle sybase op
   Rake::TestTask.new("test_#{adapter}") { |t|
     t.libs << "test" << "test/connections/native_#{adapter}"
     adapter_short = adapter == 'db2' ? adapter : adapter[/^[a-z]+/]
-    t.pattern = "test/cases/**/*_test{,_#{adapter_short}}.rb"
+    t.test_files=Dir.glob( "test/cases/**/*_test{,_#{adapter_short}}.rb" ).sort
     t.verbose = true
   }
 
@@ -45,16 +48,14 @@ end
 namespace :mysql do
   desc 'Build the MySQL test databases'
   task :build_databases do
-    %x( mysqladmin  create activerecord_unittest )
-    %x( mysqladmin  create activerecord_unittest2 )
-    %x( mysql -e "grant all on activerecord_unittest.* to rails@localhost" )
-    %x( mysql -e "grant all on activerecord_unittest2.* to rails@localhost" )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} create activerecord_unittest )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} create activerecord_unittest2 )
   end
 
   desc 'Drop the MySQL test databases'
   task :drop_databases do
-    %x( mysqladmin -f drop activerecord_unittest )
-    %x( mysqladmin -f drop activerecord_unittest2 )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} -f drop activerecord_unittest )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} -f drop activerecord_unittest2 )
   end
 
   desc 'Rebuild the MySQL test databases'
@@ -69,16 +70,14 @@ task :rebuild_mysql_databases => 'mysql:rebuild_databases'
 namespace :postgresql do
   desc 'Build the PostgreSQL test databases'
   task :build_databases do
-    %x( createdb -U postgres activerecord_unittest )
-    %x( createdb -U postgres activerecord_unittest2 )
-    %x( psql activerecord_unittest -f #{File.join(SCHEMA_ROOT, 'postgresql.sql')} postgres )
-    %x( psql activerecord_unittest2 -f #{File.join(SCHEMA_ROOT, 'postgresql2.sql')}  postgres )
+    %x( createdb activerecord_unittest )
+    %x( createdb activerecord_unittest2 )
   end
 
   desc 'Drop the PostgreSQL test databases'
   task :drop_databases do
-    %x( dropdb -U postgres activerecord_unittest )
-    %x( dropdb -U postgres activerecord_unittest2 )
+    %x( dropdb activerecord_unittest )
+    %x( dropdb activerecord_unittest2 )
   end
 
   desc 'Rebuild the PostgreSQL test databases'
@@ -172,7 +171,7 @@ spec = Gem::Specification.new do |s|
     s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
   end
 
-  s.add_dependency('activesupport', '= 2.0.2' + PKG_BUILD)
+  s.add_dependency('activesupport', '= 2.1.0' + PKG_BUILD)
 
   s.files.delete FIXTURES_ROOT + "/fixture_database.sqlite"
   s.files.delete FIXTURES_ROOT + "/fixture_database_2.sqlite"

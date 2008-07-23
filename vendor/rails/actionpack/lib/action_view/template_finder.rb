@@ -2,6 +2,11 @@ module ActionView #:nodoc:
   class TemplateFinder #:nodoc:
 
     class InvalidViewPath < StandardError #:nodoc:
+      attr_reader :unprocessed_path
+      def initialize(path)
+        @unprocessed_path = path
+        super("Unprocessed view path found: #{@unprocessed_path.inspect}.  Set your view paths with #append_view_path, #prepend_view_path, or #view_paths=.")
+      end
     end
 
     cattr_reader :processed_view_paths
@@ -18,9 +23,13 @@ module ActionView #:nodoc:
       def process_view_paths(*view_paths)
         view_paths.flatten.compact.each do |dir|
           next if @@processed_view_paths.has_key?(dir)
-
           @@processed_view_paths[dir] = []
-          Dir.glob("#{dir}/**/*").each do |file|
+          
+          # 
+          # Dir.glob("#{dir}/**/*/**") reads all the directories in view path and templates inside those directories
+          # Dir.glob("#{dir}/**") reads templates residing at top level of view path
+          # 
+          (Dir.glob("#{dir}/**/*/**") | Dir.glob("#{dir}/**")).each do |file|
             unless File.directory?(file)
               @@processed_view_paths[dir] << file.split(dir).last.sub(/^\//, '')
 
@@ -45,7 +54,7 @@ module ActionView #:nodoc:
       end
 
       def template_handler_extensions
-        ActionView::Base.template_handler_extensions
+        ActionView::Template.template_handler_extensions
       end
 
       def reload!
@@ -126,15 +135,20 @@ module ActionView #:nodoc:
     #   # => "rhtml"
     #
     def pick_template_extension(template_path)
-      find_template_extension_from_handler(template_path) || find_template_extension_from_first_render
+      if extension = find_template_extension_from_handler(template_path, @template.template_format) || find_template_extension_from_first_render
+        extension
+      elsif @template.template_format == :js && extension = find_template_extension_from_handler(template_path, :html)
+        @template.template_format = :html
+        extension
+      end
     end
 
-    def find_template_extension_from_handler(template_path)
-      formatted_template_path = "#{template_path}.#{@template.template_format}"
+    def find_template_extension_from_handler(template_path, template_format = @template.template_format)
+      formatted_template_path = "#{template_path}.#{template_format}"
 
       view_paths.each do |path|
         if (extensions = @@file_extension_cache[path][formatted_template_path]).any?
-          return "#{@template.template_format}.#{extensions.first}"
+          return "#{template_format}.#{extensions.first}"
         elsif (extensions = @@file_extension_cache[path][template_path]).any?
           return extensions.first.to_s
         end
@@ -154,12 +168,10 @@ module ActionView #:nodoc:
     end
 
     private
-
-    def check_view_paths(view_paths)
-      view_paths.each do |path|
-        raise(InvalidViewPath, "Unprocessed view path found in #{view_paths.inspect}") unless @@processed_view_paths.has_key?(path)
+      def check_view_paths(view_paths)
+        view_paths.each do |path|
+          raise InvalidViewPath.new(path) unless @@processed_view_paths.has_key?(path)
+        end
       end
-    end
-
   end
 end

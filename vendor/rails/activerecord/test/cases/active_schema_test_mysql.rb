@@ -39,8 +39,57 @@ class ActiveSchemaTest < ActiveRecord::TestCase
     assert_equal "DROP TABLE `otherdb`.`people`", drop_table('otherdb.people')
   end
 
+  def test_add_timestamps 
+    with_real_execute do
+      begin
+        ActiveRecord::Base.connection.create_table :delete_me do |t|
+        end
+        ActiveRecord::Base.connection.add_timestamps :delete_me
+        assert column_present?('delete_me', 'updated_at', 'datetime')
+        assert column_present?('delete_me', 'created_at', 'datetime')
+      ensure
+        ActiveRecord::Base.connection.drop_table :delete_me rescue nil
+      end
+    end
+  end
+  
+  def test_remove_timestamps 
+    with_real_execute do
+      begin
+        ActiveRecord::Base.connection.create_table :delete_me do |t|
+          t.timestamps
+        end
+        ActiveRecord::Base.connection.remove_timestamps :delete_me
+        assert !column_present?('delete_me', 'updated_at', 'datetime')
+        assert !column_present?('delete_me', 'created_at', 'datetime')
+      ensure
+        ActiveRecord::Base.connection.drop_table :delete_me rescue nil
+      end
+    end
+  end
+
   private
+    def with_real_execute
+      #we need to actually modify some data, so we make execute point to the original method
+      ActiveRecord::ConnectionAdapters::MysqlAdapter.class_eval do
+        alias_method :execute_with_stub, :execute
+        alias_method :execute, :execute_without_stub
+      end
+      yield
+    ensure
+      #before finishing, we restore the alias to the mock-up method
+      ActiveRecord::ConnectionAdapters::MysqlAdapter.class_eval do
+        alias_method :execute, :execute_with_stub
+      end
+    end
+
+
     def method_missing(method_symbol, *arguments)
       ActiveRecord::Base.connection.send(method_symbol, *arguments)
+    end
+
+    def column_present?(table_name, column_name, type)
+      results = ActiveRecord::Base.connection.select_all("SHOW FIELDS FROM #{table_name} LIKE '#{column_name}'")
+      results.first && results.first['Type'] == type
     end
 end

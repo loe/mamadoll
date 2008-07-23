@@ -5,7 +5,7 @@ require 'models/entrant'
 class DefaultTest < ActiveRecord::TestCase
   def test_nil_defaults_for_not_null_columns
     column_defaults =
-      if current_adapter?(:MysqlAdapter)
+      if current_adapter?(:MysqlAdapter) && Mysql.client_version < 50051
         { 'id' => nil, 'name' => '',  'course_id' => nil }
       else
         { 'id' => nil, 'name' => nil, 'course_id' => nil }
@@ -61,7 +61,9 @@ class DefaultTest < ActiveRecord::TestCase
 
   if current_adapter?(:PostgreSQLAdapter)
     def test_multiline_default_text
-      assert_equal "--- []\n\n", Default.columns_hash['multiline_default'].default
+      # older postgres versions represent the default with escapes ("\\012" for a newline)
+      assert ( "--- []\n\n" == Default.columns_hash['multiline_default'].default ||
+               "--- []\\012\\012" == Default.columns_hash['multiline_default'].default)
     end
   end
 end

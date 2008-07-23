@@ -1,4 +1,6 @@
 class Post < ActiveRecord::Base
+  named_scope :containing_the_letter_a, :conditions => "body LIKE '%a%'"
+  
   belongs_to :author do
     def greeting
       "hello"
@@ -6,6 +8,8 @@ class Post < ActiveRecord::Base
   end
 
   belongs_to :author_with_posts, :class_name => "Author", :foreign_key => :author_id, :include => :posts
+
+  has_one :last_comment, :class_name => 'Comment', :order => 'id desc'
 
   has_many   :comments, :order => "body" do
     def find_most_recent
@@ -25,7 +29,7 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :special_categories, :join_table => "categories_posts", :association_foreign_key => 'category_id'
 
   has_many :taggings, :as => :taggable
-  has_many :tags, :through => :taggings, :include => :tagging do
+  has_many :tags, :through => :taggings do
     def add_joins_and_select
       find :all, :select => 'tags.*, authors.id as author_id', :include => false,
         :joins => 'left outer join posts on taggings.taggable_id = posts.id left outer join authors on posts.author_id = authors.id'
@@ -44,6 +48,20 @@ class Post < ActiveRecord::Base
 
   has_many :readers
   has_many :people, :through => :readers
+  has_many :people_with_callbacks, :source=>:person, :through => :readers,
+              :before_add    => lambda {|owner, reader| log(:added,   :before, reader.first_name) },
+              :after_add     => lambda {|owner, reader| log(:added,   :after,  reader.first_name) },
+              :before_remove => lambda {|owner, reader| log(:removed, :before, reader.first_name) },
+              :after_remove  => lambda {|owner, reader| log(:removed, :after,  reader.first_name) }
+
+  def self.reset_log
+    @log = []
+  end
+  
+  def self.log(message=nil, side=nil, new_record=nil)
+    return @log if message.nil?
+    @log << [message, side, new_record]
+  end
 
   def self.what_are_you
     'a post...'

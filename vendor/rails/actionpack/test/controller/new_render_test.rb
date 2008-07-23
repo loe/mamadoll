@@ -136,19 +136,46 @@ class NewRenderTestController < ActionController::Base
   end
 
   def partial_with_form_builder
-    render :partial => ActionView::Helpers::FormBuilder.new(:post, nil, @template, nil, Proc.new {})
+    render :partial => ActionView::Helpers::FormBuilder.new(:post, nil, @template, {}, Proc.new {})
   end
-  
+
   def partial_with_form_builder_subclass
-    render :partial => LabellingFormBuilder.new(:post, nil, @template, nil, Proc.new {})
+    render :partial => LabellingFormBuilder.new(:post, nil, @template, {}, Proc.new {})
   end
 
   def partial_collection
     render :partial => "customer", :collection => [ Customer.new("david"), Customer.new("mary") ]
   end
+  
+  def partial_collection_with_spacer
+    render :partial => "customer", :spacer_template => "partial_only", :collection => [ Customer.new("david"), Customer.new("mary") ]
+  end
+  
+  def partial_collection_with_counter
+    render :partial => "customer_counter", :collection => [ Customer.new("david"), Customer.new("mary") ]
+  end
 
   def partial_collection_with_locals
     render :partial => "customer_greeting", :collection => [ Customer.new("david"), Customer.new("mary") ], :locals => { :greeting => "Bonjour" }
+  end
+
+  def partial_collection_shorthand_with_locals
+    render :partial => [ Customer.new("david"), Customer.new("mary") ], :locals => { :greeting => "Bonjour" }
+  end
+
+  def partial_collection_shorthand_with_different_types_of_records
+    render :partial => [
+        BadCustomer.new("mark"),
+        GoodCustomer.new("craig"),
+        BadCustomer.new("john"),
+        GoodCustomer.new("zach"),
+        GoodCustomer.new("brandon"),
+        BadCustomer.new("dan") ],
+      :locals => { :greeting => "Bonjour" }
+  end
+
+  def partial_collection_shorthand_with_different_types_of_records_with_counter
+    partial_collection_shorthand_with_different_types_of_records
   end
 
   def empty_partial_collection
@@ -210,6 +237,18 @@ class NewRenderTestController < ActionController::Base
 
   def accessing_params_in_template
     render :inline =>  "Hello: <%= params[:name] %>"
+  end
+
+  def accessing_request_in_template
+    render :inline =>  "Hello: <%= request.host %>"
+  end
+
+  def accessing_logger_in_template
+    render :inline =>  "<%= logger.class %>"
+  end
+  
+  def accessing_action_name_in_template
+    render :inline =>  "<%= action_name %>"
   end
 
   def accessing_params_in_template_with_layout
@@ -502,26 +541,18 @@ class NewRenderTest < Test::Unit::TestCase
   end
 
   def test_access_to_request_in_view
-    view_internals_old_value = ActionController::Base.view_controller_internals
+    get :accessing_request_in_template
+    assert_equal "Hello: www.nextangle.com", @response.body
+  end
 
-    ActionController::Base.view_controller_internals = false
-    ActionController::Base.protected_variables_cache = nil
-
-    get :hello_world
-    assert !assigns.include?('_request'), '_request should not be in assigns'
-    assert !assigns.include?('request'), 'request should not be in assigns'
-
-    ActionController::Base.view_controller_internals = true
-    ActionController::Base.protected_variables_cache = nil
-
-    get :hello_world
-    assert !assigns.include?('request'), 'request should not be in assigns'
-    assert_kind_of ActionController::AbstractRequest, assigns['_request']
-    assert_kind_of ActionController::AbstractRequest, @response.template.request
-
-  ensure
-    ActionController::Base.view_controller_internals = view_internals_old_value
-    ActionController::Base.protected_variables_cache = nil
+  def test_access_to_logger_in_view
+    get :accessing_logger_in_template
+    assert_equal "Logger", @response.body
+  end
+  
+  def test_access_to_action_name_in_view
+    get :accessing_action_name_in_template
+    assert_equal "accessing_action_name_in_template", @response.body
   end
 
   def test_render_xml
@@ -544,6 +575,12 @@ EOS
   def test_render_xml_with_default
     get :greeting
     assert_equal "<p>This is grand!</p>\n", @response.body
+  end
+
+  def test_render_with_default_from_accept_header
+    @request.env["HTTP_ACCEPT"] = "text/javascript"
+    get :greeting
+    assert_equal "$(\"body\").visualEffect(\"highlight\");", @response.body
   end
 
   def test_render_rjs_with_default
@@ -619,7 +656,7 @@ EOS
   end  
 
   def test_bad_render_to_string_still_throws_exception
-    assert_raises(ActionController::MissingTemplate) { get :render_to_string_with_exception }
+    assert_raises(ActionView::MissingTemplate) { get :render_to_string_with_exception }
   end
   
   def test_render_to_string_that_throws_caught_exception_doesnt_break_assigns
@@ -702,10 +739,30 @@ EOS
     get :partial_collection
     assert_equal "Hello: davidHello: mary", @response.body
   end
-
+  
+  def test_partial_collection_with_counter
+    get :partial_collection_with_counter
+    assert_equal "david1mary2", @response.body
+  end
+  
   def test_partial_collection_with_locals
     get :partial_collection_with_locals
     assert_equal "Bonjour: davidBonjour: mary", @response.body
+  end
+  
+  def test_partial_collection_with_spacer
+    get :partial_collection_with_spacer
+    assert_equal "Hello: davidonly partialHello: mary", @response.body
+  end
+
+  def test_partial_collection_shorthand_with_locals
+    get :partial_collection_shorthand_with_locals
+    assert_equal "Bonjour: davidBonjour: mary", @response.body
+  end
+
+  def test_partial_collection_shorthand_with_different_types_of_records
+    get :partial_collection_shorthand_with_different_types_of_records
+    assert_equal "Bonjour bad customer: mark1Bonjour good customer: craig2Bonjour bad customer: john3Bonjour good customer: zach4Bonjour good customer: brandon5Bonjour bad customer: dan6", @response.body
   end
 
   def test_empty_partial_collection
@@ -734,7 +791,7 @@ EOS
   end
   
   def test_render_missing_partial_template
-    assert_raises(ActionView::ActionViewError) do
+    assert_raises(ActionView::MissingTemplate) do
       get :missing_partial
     end
   end

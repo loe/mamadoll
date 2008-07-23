@@ -1,3 +1,5 @@
+require 'benchmark'
+
 module ActiveSupport
   module Cache
     def self.lookup_store(*store_option)
@@ -47,9 +49,10 @@ module ActiveSupport
         self
       end
 
-      def fetch(key, options = nil)
-        @logger_off = true        
-        if value = read(key, options)
+      # Pass <tt>:force => true</tt> to force a cache miss.
+      def fetch(key, options = {})
+        @logger_off = true
+        if !options[:force] && value = read(key, options)
           @logger_off = false
           log("hit", key, options)
           value
@@ -86,6 +89,27 @@ module ActiveSupport
         log("delete matched", matcher.inspect, options)
       end
 
+      def exist?(key, options = nil)
+        log("exist?", key, options)
+      end
+
+      def increment(key, amount = 1)
+        log("incrementing", key, amount)
+        if num = read(key)
+          write(key, num + amount)
+        else
+          nil
+        end
+      end
+
+      def decrement(key, amount = 1)
+        log("decrementing", key, amount)
+        if num = read(key)
+          write(key, num - amount)
+        else
+          nil
+        end
+      end
       
       private
         def log(operation, key, options)

@@ -22,6 +22,13 @@ module ActionController #:nodoc:
     #   end
     #
     # In the example above, four actions are cached and three actions are responsible for expiring those caches.
+    #
+    # You can also name an explicit class in the declaration of a sweeper, which is needed if the sweeper is in a module:
+    #
+    #   class ListsController < ApplicationController
+    #     caches_action :index, :show, :public, :feed
+    #     cache_sweeper OpenBar::Sweeper, :only => [ :edit, :destroy, :share ]
+    #   end
     module Sweeping
       def self.included(base) #:nodoc:
         base.extend(ClassMethods)
@@ -29,11 +36,11 @@ module ActionController #:nodoc:
 
       module ClassMethods #:nodoc:
         def cache_sweeper(*sweepers)
-          return unless perform_caching
           configuration = sweepers.extract_options!
+
           sweepers.each do |sweeper|
             ActiveRecord::Base.observers << sweeper if defined?(ActiveRecord) and defined?(ActiveRecord::Base)
-            sweeper_instance = Object.const_get(Inflector.classify(sweeper)).instance
+            sweeper_instance = (sweeper.is_a?(Symbol) ? Object.const_get(sweeper.to_s.classify) : sweeper).instance
 
             if sweeper_instance.is_a?(Sweeper)
               around_filter(sweeper_instance, :only => configuration[:only])
@@ -51,11 +58,11 @@ module ActionController #:nodoc:
 
         def before(controller)
           self.controller = controller
-          callback(:before)
+          callback(:before) if controller.perform_caching
         end
 
         def after(controller)
-          callback(:after)
+          callback(:after) if controller.perform_caching
           # Clean up, so that the controller can be collected after this request
           self.controller = nil
         end

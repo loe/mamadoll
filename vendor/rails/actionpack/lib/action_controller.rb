@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2004-2007 David Heinemeier Hansson
+# Copyright (c) 2004-2008 David Heinemeier Hansson
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -58,7 +58,6 @@ require 'action_controller/request_forgery_protection'
 require 'action_controller/headers'
 
 require 'action_view'
-ActionController::Base.template_class = ActionView::Base
 
 ActionController::Base.class_eval do
   include ActionController::Flash

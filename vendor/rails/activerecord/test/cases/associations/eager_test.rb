@@ -7,10 +7,18 @@ require 'models/category'
 require 'models/company'
 require 'models/person'
 require 'models/reader'
+require 'models/owner'
+require 'models/pet'
+require 'models/reference'
+require 'models/job'
+require 'models/subscriber'
+require 'models/subscription'
+require 'models/book'
 
 class EagerAssociationTest < ActiveRecord::TestCase
   fixtures :posts, :comments, :authors, :categories, :categories_posts,
-            :companies, :accounts, :tags, :taggings, :people, :readers
+            :companies, :accounts, :tags, :taggings, :people, :readers,
+            :owners, :pets, :author_favorites, :jobs, :references, :subscribers, :subscriptions, :books
 
   def test_loading_with_one_association
     posts = Post.find(:all, :include => :comments)
@@ -21,6 +29,10 @@ class EagerAssociationTest < ActiveRecord::TestCase
     post = Post.find(:first, :include => :comments, :conditions => "posts.title = 'Welcome to the weblog'")
     assert_equal 2, post.comments.size
     assert post.comments.include?(comments(:greetings))
+
+    posts = Post.find(:all, :include => :last_comment)
+    post = posts.find { |p| p.id == 1 }
+    assert_equal Post.find(1).last_comment, post.last_comment
   end
 
   def test_loading_conditions_with_or
@@ -64,6 +76,32 @@ class EagerAssociationTest < ActiveRecord::TestCase
     end
   end
 
+  def test_including_duplicate_objects_from_belongs_to
+    popular_post = Post.create!(:title => 'foo', :body => "I like cars!")
+    comment = popular_post.comments.create!(:body => "lol")
+    popular_post.readers.create!(:person => people(:michael))
+    popular_post.readers.create!(:person => people(:david))
+
+    readers = Reader.find(:all, :conditions => ["post_id = ?", popular_post.id],
+                                :include => {:post => :comments})
+    readers.each do |reader|
+      assert_equal [comment], reader.post.comments
+    end
+  end
+
+  def test_including_duplicate_objects_from_has_many
+    car_post = Post.create!(:title => 'foo', :body => "I like cars!")
+    car_post.categories << categories(:general)
+    car_post.categories << categories(:technology)
+
+    comment = car_post.comments.create!(:body => "hmm")
+    categories = Category.find(:all, :conditions => ["posts.id=?", car_post.id],
+                                 :include => {:posts => :comments})
+    categories.each do |category|
+      assert_equal [comment], category.posts[0].comments
+    end
+  end
+
   def test_loading_from_an_association
     posts = authors(:david).posts.find(:all, :include => :comments, :order => "posts.id")
     assert_equal 2, posts.first.comments.size
@@ -71,6 +109,17 @@ class EagerAssociationTest < ActiveRecord::TestCase
 
   def test_loading_with_no_associations
     assert_nil Post.find(posts(:authorless).id, :include => :author).author
+  end
+
+  def test_nested_loading_with_no_associations
+    assert_nothing_raised do
+      Post.find(posts(:authorless).id, :include => {:author => :author_addresss})
+    end
+  end
+
+  def test_eager_association_loading_with_belongs_to_and_foreign_keys
+    pets = Pet.find(:all, :include => :owner)
+    assert_equal 3, pets.length
   end
 
   def test_eager_association_loading_with_belongs_to
@@ -111,6 +160,32 @@ class EagerAssociationTest < ActiveRecord::TestCase
     assert_equal [6,7,8], comments.collect { |c| c.id }
   end
 
+  def test_eager_association_loading_with_belongs_to_and_conditions_string_with_unquoted_table_name
+    assert_nothing_raised do
+      Comment.find(:all, :include => :post, :conditions => ['posts.id = ?',4])
+    end
+  end
+
+  def test_eager_association_loading_with_belongs_to_and_conditions_string_with_quoted_table_name
+    quoted_posts_id= Comment.connection.quote_table_name('posts') + '.' + Comment.connection.quote_column_name('id')
+    assert_nothing_raised do
+      Comment.find(:all, :include => :post, :conditions => ["#{quoted_posts_id} = ?",4])
+    end
+  end
+
+  def test_eager_association_loading_with_belongs_to_and_order_string_with_unquoted_table_name
+    assert_nothing_raised do
+      Comment.find(:all, :include => :post, :order => 'posts.id')
+    end
+  end
+
+  def test_eager_association_loading_with_belongs_to_and_order_string_with_quoted_table_name
+    quoted_posts_id= Comment.connection.quote_table_name('posts') + '.' + Comment.connection.quote_column_name('id')
+    assert_nothing_raised do
+      Comment.find(:all, :include => :post, :order => quoted_posts_id)
+    end
+  end
+
   def test_eager_association_loading_with_belongs_to_and_limit_and_multiple_associations
     posts = Post.find(:all, :include => [:author, :very_special_comment], :limit => 1, :order => 'posts.id')
     assert_equal 1, posts.length
@@ -126,6 +201,48 @@ class EagerAssociationTest < ActiveRecord::TestCase
   def test_eager_association_loading_with_belongs_to_inferred_foreign_key_from_association_name
     author_favorite = AuthorFavorite.find(:first, :include => :favorite_author)
     assert_equal authors(:mary), assert_no_queries { author_favorite.favorite_author }
+  end
+
+  def test_eager_load_belongs_to_quotes_table_and_column_names
+    job = Job.find jobs(:unicyclist).id, :include => :ideal_reference
+    references(:michael_unicyclist)
+    assert_no_queries{ assert_equal references(:michael_unicyclist), job.ideal_reference}
+  end
+
+  def test_eager_load_has_one_quotes_table_and_column_names
+    michael = Person.find(people(:michael), :include => :favourite_reference)
+    references(:michael_unicyclist)
+    assert_no_queries{ assert_equal references(:michael_unicyclist), michael.favourite_reference}
+  end
+
+  def test_eager_load_has_many_quotes_table_and_column_names
+    michael = Person.find(people(:michael), :include => :references)
+    references(:michael_magician,:michael_unicyclist)
+    assert_no_queries{ assert_equal references(:michael_magician,:michael_unicyclist), michael.references.sort_by(&:id) }
+  end
+
+  def test_eager_load_has_many_through_quotes_table_and_column_names
+    michael = Person.find(people(:michael), :include => :jobs)
+    jobs(:magician, :unicyclist)
+    assert_no_queries{ assert_equal jobs(:unicyclist, :magician), michael.jobs.sort_by(&:id) }
+  end
+
+  def test_eager_load_has_many_with_string_keys
+    subscriptions = subscriptions(:webster_awdr, :webster_rfr)
+    subscriber =Subscriber.find(subscribers(:second).id, :include => :subscriptions)
+    assert_equal subscriptions, subscriber.subscriptions.sort_by(&:id)
+  end
+  
+  def test_eager_load_has_many_through_with_string_keys
+    books = books(:awdr, :rfr)
+    subscriber = Subscriber.find(subscribers(:second).id, :include => :books)
+    assert_equal books, subscriber.books.sort_by(&:id)
+  end
+  
+  def test_eager_load_belongs_to_with_string_keys
+    subscriber = subscribers(:second)
+    subscription = Subscription.find(subscriptions(:webster_awdr).id, :include => :subscriber)
+    assert_equal subscriber, subscription.subscriber
   end
 
   def test_eager_association_loading_with_explicit_join
@@ -156,6 +273,17 @@ class EagerAssociationTest < ActiveRecord::TestCase
     assert_equal Author.find(:first, :include => :hello_post_comments,
                              :order => 'authors.id').hello_post_comments.sort_by(&:id),
                  Author.find(:first, :order => 'authors.id').hello_post_comments.sort_by(&:id)
+  end
+
+  def test_eager_with_has_many_through_join_model_with_conditions_on_top_level
+    assert_equal comments(:more_greetings), Author.find(authors(:david).id, :include => :comments_with_order_and_conditions).comments_with_order_and_conditions.first
+  end
+
+  def test_eager_with_has_many_through_join_model_with_include
+    author_comments = Author.find(authors(:david).id, :include => :comments_with_include).comments_with_include.to_a
+    assert_no_queries do
+      author_comments.first.post.title
+    end
   end
 
   def test_eager_with_has_many_and_limit
@@ -211,6 +339,12 @@ class EagerAssociationTest < ActiveRecord::TestCase
     author = authors(:david)
     author_posts_without_comments = author.posts.select { |post| post.comments.blank? }
     assert_equal author_posts_without_comments.size, author.posts.count(:all, :include => :comments, :conditions => 'comments.id is null')
+  end
+  
+  def test_eager_count_performed_on_a_has_many_through_association_with_multi_table_conditional
+    person = people(:michael)
+    person_posts_without_comments = person.posts.select { |post| post.comments.blank? }
+    assert_equal person_posts_without_comments.size, person.posts_with_no_comments.count
   end
 
   def test_eager_with_has_and_belongs_to_many_and_limit
@@ -467,6 +601,12 @@ class EagerAssociationTest < ActiveRecord::TestCase
       assert_equal 3, authors(:david).posts_with_comments.count(:conditions => "length(FETCHBLOB(comments.body)) > 15")
     else
       assert_equal 3, authors(:david).posts_with_comments.count(:conditions => "length(comments.body) > 15")
+    end
+  end
+
+  def test_load_with_sti_sharing_association
+    assert_queries(2) do #should not do 1 query per subclass
+      Comment.find :all, :include => :post
     end
   end
 end

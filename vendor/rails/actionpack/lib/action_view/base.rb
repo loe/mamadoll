@@ -1,10 +1,13 @@
 module ActionView #:nodoc:
   class ActionViewError < StandardError #:nodoc:
   end
+  
+  class MissingTemplate < ActionViewError #:nodoc:
+  end
 
-  # Action View templates can be written in three ways. If the template file has a +.erb+ (or +.rhtml+) extension then it uses a mixture of ERb 
-  # (included in Ruby) and HTML. If the template file has a +.builder+ (or +.rxml+) extension then Jim Weirich's Builder::XmlMarkup library is used. 
-  # If the template file has a +.rjs+ extension then it will use ActionView::Helpers::PrototypeHelper::JavaScriptGenerator.
+  # Action View templates can be written in three ways. If the template file has a <tt>.erb</tt> (or <tt>.rhtml</tt>) extension then it uses a mixture of ERb 
+  # (included in Ruby) and HTML. If the template file has a <tt>.builder</tt> (or <tt>.rxml</tt>) extension then Jim Weirich's Builder::XmlMarkup library is used. 
+  # If the template file has a <tt>.rjs</tt> extension then it will use ActionView::Helpers::PrototypeHelper::JavaScriptGenerator.
   # 
   # = ERb
   # 
@@ -21,7 +24,7 @@ module ActionView #:nodoc:
   #
   #   Hi, Mr. <% puts "Frodo" %>
   #
-  # If you absolutely must write from within a function, you can use the TextHelper#concat
+  # If you absolutely must write from within a function, you can use the TextHelper#concat.
   #
   # <%- and -%> suppress leading and trailing whitespace, including the trailing newline, and can be used interchangeably with <% and %>.
   #
@@ -43,7 +46,7 @@ module ActionView #:nodoc:
   #   <% @page_title = "A Wonderful Hello" %>
   #   <%= render "shared/header" %>
   #
-  # Now the header can pick up on the @page_title variable and use it for outputting a title tag:
+  # Now the header can pick up on the <tt>@page_title</tt> variable and use it for outputting a title tag:
   #
   #   <title><%= @page_title %></title>
   #
@@ -53,7 +56,7 @@ module ActionView #:nodoc:
   #
   #   <%= render "shared/header", { :headline => "Welcome", :person => person } %>
   #
-  # These can now be accessed in shared/header with:
+  # These can now be accessed in <tt>shared/header</tt> with:
   #
   #   Headline: <%= headline %>
   #   First name: <%= person.first_name %>
@@ -74,13 +77,13 @@ module ActionView #:nodoc:
   #
   # == Builder
   #
-  # Builder templates are a more programmatic alternative to ERb. They are especially useful for generating XML content. An +XmlMarkup+ object 
-  # named +xml+ is automatically made available to templates with a +.builder+ extension. 
+  # Builder templates are a more programmatic alternative to ERb. They are especially useful for generating XML content. An XmlMarkup object 
+  # named +xml+ is automatically made available to templates with a <tt>.builder</tt> extension. 
   #
   # Here are some basic examples:
   #
   #   xml.em("emphasized")                              # => <em>emphasized</em>
-  #   xml.em { xml.b("emph & bold") }                    # => <em><b>emph &amp; bold</b></em>
+  #   xml.em { xml.b("emph & bold") }                   # => <em><b>emph &amp; bold</b></em>
   #   xml.a("A Link", "href"=>"http://onestepback.org") # => <a href="http://onestepback.org">A Link</a>
   #   xml.target("name"=>"compile", "option"=>"fast")   # => <target option="fast" name="compile"\>
   #                                                     # NOTE: order of attributes is not specified.
@@ -127,18 +130,18 @@ module ActionView #:nodoc:
   #
   # == JavaScriptGenerator
   #
-  # JavaScriptGenerator templates end in +.rjs+. Unlike conventional templates which are used to 
+  # JavaScriptGenerator templates end in <tt>.rjs</tt>. Unlike conventional templates which are used to 
   # render the results of an action, these templates generate instructions on how to modify an already rendered page. This makes it easy to 
   # modify multiple elements on your page in one declarative Ajax response. Actions with these templates are called in the background with Ajax 
   # and make updates to the page where the request originated from.
   # 
   # An instance of the JavaScriptGenerator object named +page+ is automatically made available to your template, which is implicitly wrapped in an ActionView::Helpers::PrototypeHelper#update_page block. 
   #
-  # When an .rjs action is called with +link_to_remote+, the generated JavaScript is automatically evaluated.  Example:
+  # When an <tt>.rjs</tt> action is called with +link_to_remote+, the generated JavaScript is automatically evaluated.  Example:
   #
   #   link_to_remote :url => {:action => 'delete'}
   #
-  # The subsequently rendered +delete.rjs+ might look like:
+  # The subsequently rendered <tt>delete.rjs</tt> might look like:
   #
   #   page.replace_html  'sidebar', :partial => 'sidebar'
   #   page.remove        "person-#{@person.id}"
@@ -150,14 +153,12 @@ module ActionView #:nodoc:
   class Base
     include ERB::Util
 
-    attr_reader   :first_render, :finder
-    attr_accessor :base_path, :assigns, :template_extension
+    attr_reader   :finder
+    attr_accessor :base_path, :assigns, :template_extension, :first_render
     attr_accessor :controller
-
-    attr_reader :logger, :response, :headers
-    attr_internal :cookies, :flash, :headers, :params, :request, :response, :session
     
     attr_writer :template_format
+    attr_accessor :current_render_extension
 
     # Specify trim mode for the ERB compiler. Defaults to '-'.
     # See ERb documentation for suitable values.
@@ -167,18 +168,12 @@ module ActionView #:nodoc:
     # Specify whether file modification times should be checked to see if a template needs recompilation
     @@cache_template_loading = false
     cattr_accessor :cache_template_loading
-
-    # Specify whether file extension lookup should be cached, and whether template base path lookup should be cached.
-    # Should be +false+ for development environments. Defaults to +true+.
-    @@cache_template_extensions = true
-    cattr_accessor :cache_template_extensions
-
-    # Specify whether local_assigns should be able to use string keys.
-    # Defaults to +true+. String keys are deprecated and will be removed
-    # shortly.
-    @@local_assigns_support_string_keys = true
-    cattr_accessor :local_assigns_support_string_keys
     
+    def self.cache_template_extensions=(*args)
+      ActiveSupport::Deprecation.warn("config.action_view.cache_template_extensions option has been deprecated and has no affect. " <<
+                                       "Please remove it from your config files.", caller)
+    end
+
     # Specify whether RJS responses should be wrapped in a try/catch block
     # that alert()s the caught exception (and then re-raises it). 
     @@debug_rjs = false
@@ -187,9 +182,10 @@ module ActionView #:nodoc:
     @@erb_variable = '_erbout'
     cattr_accessor :erb_variable
     
-    delegate :request_forgery_protection_token, :to => :controller
+    attr_internal :request
 
-    @@template_handlers = HashWithIndifferentAccess.new
+    delegate :request_forgery_protection_token, :template, :params, :session, :cookies, :response, :headers,
+             :flash, :logger, :action_name, :to => :controller
  
     module CompiledTemplates #:nodoc:
       # holds compiled template code
@@ -206,61 +202,26 @@ module ActionView #:nodoc:
     cattr_reader :computed_public_paths
     @@computed_public_paths = {}
 
-    @@template_handlers = {}
-    @@default_template_handlers = nil
-
     class ObjectWrapper < Struct.new(:value) #:nodoc:
     end
 
-    def self.load_helpers #:nodoc:
-      Dir.entries("#{File.dirname(__FILE__)}/helpers").sort.each do |file|
+    def self.helper_modules #:nodoc:
+      helpers = []
+      Dir.entries(File.expand_path("#{File.dirname(__FILE__)}/helpers")).sort.each do |file|
         next unless file =~ /^([a-z][a-z_]*_helper).rb$/
         require "action_view/helpers/#{$1}"
         helper_module_name = $1.camelize
         if Helpers.const_defined?(helper_module_name)
-          include Helpers.const_get(helper_module_name)
+          helpers << Helpers.const_get(helper_module_name)
         end
       end
+      return helpers
     end
-
-    # Register a class that knows how to handle template files with the given
-    # extension. This can be used to implement new template types.
-    # The constructor for the class must take the ActiveView::Base instance
-    # as a parameter, and the class must implement a #render method that
-    # takes the contents of the template to render as well as the Hash of
-    # local assigns available to the template. The #render method ought to
-    # return the rendered template as a string.
-    def self.register_template_handler(extension, klass)
-      @@template_handlers[extension.to_sym] = klass
-      TemplateFinder.update_extension_cache_for(extension.to_s)
-    end
-
-    def self.template_handler_extensions
-      @@template_handlers.keys.map(&:to_s).sort
-    end
-
-    def self.register_default_template_handler(extension, klass)
-      register_template_handler(extension, klass)
-      @@default_template_handlers = klass
-    end
-
-    def self.handler_class_for_extension(extension)
-      (extension && @@template_handlers[extension.to_sym]) || @@default_template_handlers
-    end
-
-    register_default_template_handler :erb, TemplateHandlers::ERB
-    register_template_handler :rjs, TemplateHandlers::RJS
-    register_template_handler :builder, TemplateHandlers::Builder
-
-    # TODO: Depreciate old template extensions
-    register_template_handler :rhtml, TemplateHandlers::ERB
-    register_template_handler :rxml, TemplateHandlers::Builder
 
     def initialize(view_paths = [], assigns_for_first_render = {}, controller = nil)#:nodoc:
       @assigns = assigns_for_first_render
       @assigns_added = nil
       @controller = controller
-      @logger = controller && controller.logger
       @finder = TemplateFinder.new(self, view_paths)
     end
 
@@ -281,65 +242,27 @@ If you are rendering a subtemplate, you must now use controller-like partial syn
         END_ERROR
       end
       
-      # Clear the forward slash at the beginning if exists
-      template_path = template_path.sub(/^\//, '') if use_full_path
-
-      @first_render ||= template_path
-      template_path_without_extension, template_extension = @finder.path_and_extension(template_path)
-      if use_full_path
-        if template_extension
-          template_file_name = @finder.pick_template(template_path_without_extension, template_extension)
-        else
-          template_extension = @finder.pick_template_extension(template_path).to_s
-          unless template_extension
-            raise ActionViewError, "No template found for #{template_path} in #{@finder.view_paths.inspect}"
-          end
-          template_file_name = @finder.pick_template(template_path, template_extension)
-          template_extension = template_extension.gsub(/^.+\./, '') # strip off any formats
-        end
-      else
-        template_file_name = template_path
-      end
-
-      template_source = nil # Don't read the source until we know that it is required
-
-      if template_file_name.blank?
-        raise ActionViewError, "Couldn't find template file for #{template_path} in #{@finder.view_paths.inspect}"
-      end
-
-      begin
-        render_template(template_extension, template_source, template_file_name, local_assigns)
-      rescue Exception => e
-        if TemplateError === e
-          e.sub_template_of(template_file_name)
-          raise e
-        else
-          raise TemplateError.new(@finder.find_base_path_for("#{template_path_without_extension}.#{template_extension}") ||
-                @finder.view_paths.first, template_file_name, @assigns, template_source, e)
-        end
-      end
+      Template.new(self, template_path, use_full_path, local_assigns).render_template
     end
     
     # Renders the template present at <tt>template_path</tt> (relative to the view_paths array). 
     # The hash in <tt>local_assigns</tt> is made available as local variables.
-    def render(options = {}, old_local_assigns = {}, &block) #:nodoc:
+    def render(options = {}, local_assigns = {}, &block) #:nodoc:
       if options.is_a?(String)
-        render_file(options, true, old_local_assigns)
+        render_file(options, true, local_assigns)
       elsif options == :update
         update_page(&block)
       elsif options.is_a?(Hash)
         options = options.reverse_merge(:locals => {}, :use_full_path => true)
 
-        if options[:layout]
-          path, partial_name = partial_pieces(options.delete(:layout))
-
+        if partial_layout = options.delete(:layout)
           if block_given?
             wrap_content_for_layout capture(&block) do 
-              concat(render(options.merge(:partial => "#{path}/#{partial_name}")), block.binding)
+              concat(render(options.merge(:partial => partial_layout)), block.binding)
             end
           else
             wrap_content_for_layout render(options) do
-              render(options.merge(:partial => "#{path}/#{partial_name}"))
+              render(options.merge(:partial => partial_layout))
             end
           end
         elsif options[:file]
@@ -349,22 +272,14 @@ If you are rendering a subtemplate, you must now use controller-like partial syn
         elsif options[:partial]
           render_partial(options[:partial], ActionView::Base::ObjectWrapper.new(options[:object]), options[:locals])
         elsif options[:inline]
-          render_template(options[:type], options[:inline], nil, options[:locals])
+          template = InlineTemplate.new(self, options[:inline], options[:locals], options[:type])
+          render_template(template)
         end
       end
     end
 
-    # Renders the +template+ which is given as a string as either erb or builder depending on <tt>template_extension</tt>.
-    # The hash in <tt>local_assigns</tt> is made available as local variables.
-    def render_template(template_extension, template, file_path = nil, local_assigns = {}) #:nodoc:
-      handler = self.class.handler_class_for_extension(template_extension).new(self)
-
-      if handler.compilable?
-        compile_and_render_template(handler, template, file_path, local_assigns)
-      else
-        template ||= handler.read_template_file(file_path, template_extension) # Make sure that a lazyily-read template is loaded.
-        handler.render(template, local_assigns)
-      end
+    def render_template(template) #:nodoc:
+      template.render_template
     end
 
     # Returns true is the file may be rendered implicitly.
@@ -372,11 +287,31 @@ If you are rendering a subtemplate, you must now use controller-like partial syn
       template_path.split('/').last[0,1] != '_'
     end
 
-    # symbolized version of the :format parameter of the request, or :html by default.
+    # Returns a symbolized version of the <tt>:format</tt> parameter of the request,
+    # or <tt>:html</tt> by default.
+    #
+    # EXCEPTION: If the <tt>:format</tt> parameter is not set, the Accept header will be examined for
+    # whether it contains the JavaScript mime type as its first priority. If that's the case,
+    # it will be used. This ensures that Ajax applications can use the same URL to support both
+    # JavaScript and non-JavaScript users.
     def template_format
       return @template_format if @template_format
-      format = controller && controller.respond_to?(:request) && controller.request.parameters[:format]
-      @template_format = format.blank? ? :html : format.to_sym
+
+      if controller && controller.respond_to?(:request)
+        parameter_format = controller.request.parameters[:format]
+        accept_format    = controller.request.accepts.first
+
+        case
+        when parameter_format.blank? && accept_format != :js
+          @template_format = :html
+        when parameter_format.blank? && accept_format == :js
+          @template_format = :js
+        else
+          @template_format = parameter_format.to_sym
+        end
+      else
+        @template_format = :html
+      end
     end
 
     private
@@ -398,27 +333,11 @@ If you are rendering a subtemplate, you must now use controller-like partial syn
       def assign_variables_from_controller
         @assigns.each { |key, value| instance_variable_set("@#{key}", value) }
       end
-
-      # Render the provided template with the given local assigns. If the template has not been rendered with the provided
-      # local assigns yet, or if the template has been updated on disk, then the template will be compiled to a method.
-      #
-      # Either, but not both, of template and file_path may be nil. If file_path is given, the template
-      # will only be read if it has to be compiled.
-      #
-      def compile_and_render_template(handler, template = nil, file_path = nil, local_assigns = {}) #:nodoc:
-        # convert string keys to symbols if requested
-        local_assigns = local_assigns.symbolize_keys if @@local_assigns_support_string_keys
-
-        # compile the given template, if necessary
-        handler.compile_template(template, file_path, local_assigns)
-
-        # Get the method name for this template and run it
-        method_name = @@method_names[file_path || template]
-        evaluate_assigns
-
-        send(method_name, local_assigns) do |*name|
-          instance_variable_get "@content_for_#{name.first || 'layout'}"
-        end
+      
+      def execute(template)
+        send(template.method, template.locals) do |*names|
+          instance_variable_get "@content_for_#{names.first || 'layout'}"
+        end        
       end
   end
 end

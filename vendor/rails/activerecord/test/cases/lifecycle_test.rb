@@ -26,7 +26,7 @@ class TopicManualObserver
   end
 end
 
-class TopicaObserver < ActiveRecord::Observer
+class TopicaAuditor < ActiveRecord::Observer
   observe :topic
 
   attr_reader :topic
@@ -68,9 +68,9 @@ class LifecycleTest < ActiveRecord::TestCase
   fixtures :topics, :developers
 
   def test_before_destroy
-    assert_equal 2, Topic.count
-    Topic.find(1).destroy
-    assert_equal 0, Topic.count
+    original_count = Topic.count
+    (topic_to_be_destroyed = Topic.find(1)).destroy
+    assert_equal original_count - (1 + topic_to_be_destroyed.replies.size), Topic.count
   end
 
   def test_after_save
@@ -95,7 +95,9 @@ class LifecycleTest < ActiveRecord::TestCase
   end
 
   def test_auto_observer
-    topic_observer = TopicaObserver.instance
+    topic_observer = TopicaAuditor.instance
+    assert_nil TopicaAuditor.observed_class
+    assert_equal [Topic], TopicaAuditor.instance.observed_classes.to_a
 
     topic = Topic.find(1)
     assert_equal topic.title, topic_observer.topic.title
@@ -103,6 +105,7 @@ class LifecycleTest < ActiveRecord::TestCase
 
   def test_inferred_auto_observer
     topic_observer = TopicObserver.instance
+    assert_equal Topic, TopicObserver.observed_class
 
     topic = Topic.find(1)
     assert_equal topic.title, topic_observer.topic.title

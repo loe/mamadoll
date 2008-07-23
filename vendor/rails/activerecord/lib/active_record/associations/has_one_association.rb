@@ -51,9 +51,11 @@ module ActiveRecord
       private
         def find_target
           @reflection.klass.find(:first, 
-            :conditions => @finder_sql, 
+            :conditions => @finder_sql,
+            :select     => @reflection.options[:select],
             :order      => @reflection.options[:order], 
-            :include    => @reflection.options[:include]
+            :include    => @reflection.options[:include],
+            :readonly   => @reflection.options[:readonly]
           )
         end
 

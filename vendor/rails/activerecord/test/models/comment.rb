@@ -1,5 +1,7 @@
 class Comment < ActiveRecord::Base
-  belongs_to :post
+  named_scope :containing_the_letter_e, :conditions => "comments.body LIKE '%e%'"
+  
+  belongs_to :post, :counter_cache => true
 
   def self.what_are_you
     'a comment...'
