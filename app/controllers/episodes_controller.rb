@@ -2,6 +2,9 @@ class EpisodesController < ApplicationController
   
   before_filter :check_authorization, :except => [ :index, :show, :latest ]
   
+  caches_page :index, :show, :latest
+  cache_sweeper :episode_sweeper, :only => [:create, :update, :destroy]
+  
   def index
     @episodes = Episode.find(:all, :order => "id DESC")
     @page_title = "The Episodes"
@@ -9,6 +12,7 @@ class EpisodesController < ApplicationController
   
   def new
     @people = Person.find(:all, :order => "name ASC")
+    @episode = Episode.new
     @page_title = "New Episode"
   end
   
@@ -29,10 +33,10 @@ class EpisodesController < ApplicationController
     
     if @episode.save
       flash[:notice] = "Episode successfully created."
-      redirect_to :action => "show", :id => @episode.to_param
+      redirect_to edit_episode_path(@episode)
     else
       flash.now[:error] = @episode.errors.full_messages.to_sentence
-      render :action => "new"
+      render(:action => 'new')
     end
   end
   
@@ -59,10 +63,10 @@ class EpisodesController < ApplicationController
         
     if @episode.update_attributes(params[:episode])
       flash[:notice] = "Episode succesfully edited."
-      redirect_to :action => "show", :id => @episode.to_param
+      redirect_to edit_episode_path(@episode)
     else
       flash.now[:error] = @episode.errors.full_messages.to_sentence
-      render :action => "edit", :id => @episode.to_param
+      render(:action => 'edit')
     end
   end
   
@@ -74,7 +78,7 @@ class EpisodesController < ApplicationController
   def latest
     @episode = Episode.find(:first, :order => "id DESC")
     @page_title = @episode.title
-    render :action => "show"
+    render(:action => 'show')
   end
   
 end

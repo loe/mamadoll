@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   
-  map.resources :episodes, :has_many => :comments
+  map.resources :episodes, :has_many => :comments, :member => { :latest => :get }
   map.resources :pages
   map.resources :people
 

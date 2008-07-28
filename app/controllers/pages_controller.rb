@@ -2,6 +2,9 @@ class PagesController < ApplicationController
   
   before_filter :check_authorization, :except => [ :index, :show ]
   
+  caches_page :index, :show
+  cache_sweeper :page_sweeper, :only => [:create, :update, :destroy]
+  
   def index
     @pages = Page.find(:all, :order => "title DESC")
     @page_title = "Pages"
@@ -9,6 +12,7 @@ class PagesController < ApplicationController
   
   def new
     @page_title = "New Page"
+    @page = Page.new
   end
   
   def create
@@ -16,10 +20,10 @@ class PagesController < ApplicationController
     
     if @page.save
       flash[:notice] = "Page successfully created."
-      redirect_to :action => "show", :id => @page.to_param
+      redirect_to edit_page_path(@page)
     else
       flash.now[:error] = @page.errors.full_messages.to_sentence
-      render :action => "new"
+      render(:action => 'new')
     end
   end
   
@@ -33,10 +37,10 @@ class PagesController < ApplicationController
     
     if @page.update_attributes(params[:page])
       flash[:notice] = "Page succesfully edited."
-      redirect_to :action => "show", :id => @page.to_param
+      redirect_to edit_page_path(@page)
     else
       flash.now[:error] = @page.errors.full_messages.to_sentence
-      render :action => "edit", :id => @page.to_param
+      render(:action => 'edit')
     end
   end
   

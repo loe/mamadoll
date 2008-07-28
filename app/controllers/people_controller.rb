@@ -2,6 +2,9 @@ class PeopleController < ApplicationController
   
   before_filter :check_authorization, :except => [ :index, :show ]
   
+  caches_page :index, :show
+  cache_sweeper :person_sweeper, :only => [:create, :update, :destroy]
+  
   def index
     @people = Person.find(:all, :order => "name ASC")
     @page_title = "The People"
@@ -9,6 +12,7 @@ class PeopleController < ApplicationController
   
   def new
     @page_title = "New Person"
+    @person = Person.new
   end
   
   def create
@@ -16,10 +20,10 @@ class PeopleController < ApplicationController
     
     if @person.save
       flash[:notice] = "Person successfully created."
-      redirect_to :action => "show", :id => @person.to_param
+      redirect_to edit_person_path(@person)
     else
       flash.now[:error] = @person.errors.full_messages.to_sentence
-      render :action => "new"
+      render(:action => 'new')
     end
   end
   
@@ -33,10 +37,10 @@ class PeopleController < ApplicationController
     
     if @person.update_attributes(params[:person])
       flash[:notice] = "Person succesfully edited."
-      redirect_to :action => "show", :id => @person.to_param
+      redirect_to edit_person_path(@person)
     else
       flash.now[:error] = @person.errors.full_messages.to_sentence
-      render :action => "edit", :id => @person.to_param
+      render(:action => 'edit')
     end
   end
   
