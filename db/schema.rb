@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,15 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 10) do
+ActiveRecord::Schema.define(:version => 20080728030035) do
 
   create_table "appearances", :force => true do |t|
-    t.integer "person_id",  :limit => 50, :default => 0, :null => false
-    t.integer "episode_id", :limit => 50, :default => 0, :null => false
+    t.integer "person_id",  :limit => 11, :default => 0, :null => false
+    t.integer "episode_id", :limit => 11, :default => 0, :null => false
   end
 
   create_table "comments", :force => true do |t|
-    t.integer  "episode_id", :limit => 50, :default => 0, :null => false
+    t.integer  "episode_id", :limit => 11, :default => 0, :null => false
     t.string   "author"
     t.string   "email"
     t.text     "body"
@@ -30,22 +30,31 @@ ActiveRecord::Schema.define(:version => 10) do
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "permalink"
   end
+
+  add_index "episodes", ["permalink"], :name => "index_episodes_on_permalink"
 
   create_table "pages", :force => true do |t|
     t.string   "title"
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "permalink"
   end
+
+  add_index "pages", ["permalink"], :name => "index_pages_on_permalink"
 
   create_table "people", :force => true do |t|
     t.string  "name"
     t.text    "profile"
     t.string  "image_url"
-    t.integer "image_height"
-    t.integer "image_width"
+    t.integer "image_height", :limit => 11
+    t.integer "image_width",  :limit => 11
+    t.string  "permalink"
   end
+
+  add_index "people", ["permalink"], :name => "index_people_on_permalink"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
@@ -59,7 +68,7 @@ ActiveRecord::Schema.define(:version => 10) do
   create_table "slugs", :force => true do |t|
     t.string   "name"
     t.string   "sluggable_type"
-    t.integer  "sluggable_id"
+    t.integer  "sluggable_id",   :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

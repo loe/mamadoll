@@ -1,10 +1,9 @@
 class Person < ActiveRecord::Base
 
-  # for friendly urls
-  has_friendly_id :name, :use_slug => true 
-
   has_many :appearances, :dependent => :destroy
   has_many :episodes, :through => :appearances, :uniq => true
+  
+  has_permalink :name
   
   validates_presence_of :name
   validates_presence_of :image_url
@@ -18,6 +17,10 @@ class Person < ActiveRecord::Base
         appearance
       end
     end
+  end
+  
+  def to_param
+    permalink
   end
   
 end

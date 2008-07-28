@@ -37,13 +37,13 @@ class EpisodesController < ApplicationController
   end
   
   def edit
-    @episode = Episode.find(params[:id])
+    @episode = Episode.find_by_permalink(params[:id])
     @people = Person.find(:all, :order => "name ASC")
     @page_title = "Edit: " + @episode.title
   end
   
   def update
-    @episode = Episode.find(params[:id])
+    @episode = Episode.find_by_permalink(params[:id])
     
     # make sure we have arrays, even if they're empty
     params[:people] ||= []
@@ -67,7 +67,7 @@ class EpisodesController < ApplicationController
   end
   
   def show
-    @episode = Episode.find(params[:id])
+    @episode = Episode.find_by_permalink(params[:id])
     @page_title = @episode.title
   end
   

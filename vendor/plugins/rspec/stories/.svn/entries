@@ -1,64 +1,0 @@
-8
-
-dir
-248
-svn+ssh://switch/var/svn/projects/mamadoll/vendor/plugins/rspec/stories
-svn+ssh://switch/var/svn/projects
-
-
-
-2008-02-12T07:02:24.781257Z
-240
-andrew
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-40cb1436-730a-0410-bfb6-8e823e0ef0e7
-
-interop
-dir
-
-helper.rb
-file
-
-
-
-
-2008-03-15T03:41:09.000000Z
-6c263e3c2887fd3487b2bd1b22807078
-2008-02-12T07:02:24.781257Z
-240
-andrew
-
-example_groups
-dir
-
-resources
-dir
-
-all.rb
-file
-
-
-
-
-2008-03-15T03:41:09.000000Z
-44f16f8b5f10006aad91353331dd5563
-2008-02-12T07:02:24.781257Z
-240
-andrew
-
-pending_stories
-dir
-

@@ -24,12 +24,12 @@ class PeopleController < ApplicationController
   end
   
   def edit
-    @person = Person.find(params[:id])
+    @person = Person.find_by_permalink(params[:id])
     @page_title = "Edit: " + @person.name
   end
   
   def update
-    @person = Person.find(params[:id])
+    @person = Person.find_by_permalink(params[:id])
     
     if @person.update_attributes(params[:person])
       flash[:notice] = "Person succesfully edited."
@@ -41,7 +41,7 @@ class PeopleController < ApplicationController
   end
   
   def show
-    @person = Person.find(params[:id])
+    @person = Person.find_by_permalink(params[:id])
     @page_title = @person.name
   end
   
