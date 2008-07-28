@@ -1,4 +1,4 @@
-<% form_tag :action => "create" do -%>
+<% form_for @episode do -%>
   <%= render :partial => "form" %>
   <%= submit_tag "Create" %>
 <% end -%>

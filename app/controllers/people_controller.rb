@@ -3,7 +3,6 @@ class PeopleController < ApplicationController
   before_filter :check_authorization, :except => [ :index, :show ]
   
   caches_page :index, :show
-  cache_sweeper :person_sweeper, :only => [:create, :update, :destroy]
   
   def index
     @people = Person.find(:all, :order => "name ASC")

@@ -1,4 +1,4 @@
-<% form_tag :action => "update", :id => @page.to_param do -%>
+<% form_for @page do -%>
   <%= render :partial => "form" %>
   <%= submit_tag "Update" %>
 <% end -%>

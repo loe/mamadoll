@@ -3,7 +3,6 @@ class PagesController < ApplicationController
   before_filter :check_authorization, :except => [ :index, :show ]
   
   caches_page :index, :show
-  cache_sweeper :page_sweeper, :only => [:create, :update, :destroy]
   
   def index
     @pages = Page.find(:all, :order => "title DESC")

@@ -3,7 +3,6 @@ class EpisodesController < ApplicationController
   before_filter :check_authorization, :except => [ :index, :show, :latest ]
   
   caches_page :index, :show, :latest
-  cache_sweeper :episode_sweeper, :only => [:create, :update, :destroy]
   
   def index
     @episodes = Episode.find(:all, :order => "id DESC")
@@ -25,8 +24,8 @@ class EpisodesController < ApplicationController
     # cycle through each person and add an appearance entry for them
     params[:people].each do |p|
       appearance = Appearance.new
-      appearance.episode_id = @episode.id
-      appearance.person_id = p
+      appearance.episode = @episode
+      appearance.person = Person.find(p)
       
       appearance.save!
     end
