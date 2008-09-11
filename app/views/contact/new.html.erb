@@ -1,0 +1,12 @@
+<% form_for :contact, :url => {:action => 'create'} do |f| -%>
+
+<p><label for="contact_name">Name</label><br/>
+<%= text_field "contact", "name", :size => 20  %></p>
+
+<p><label for="contact_email">Email</label><br/>
+<%= text_field "contact", "email", :size => 20  %></p>
+
+<p><label for="contact_message">Message</label><br/>
+<%= text_area "contact", "message", :cols => 40, :rows => 20  %></p>
+  <%= submit_tag "Send" %>
+<% end -%>
