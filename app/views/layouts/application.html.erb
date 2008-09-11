@@ -68,7 +68,10 @@
         <h1><%= link_to h(page.title), :controller => "pages", :action => "show", :id => page.to_param %></h1>
       </div>
       <% end -%>
-            
+      
+      <div class="sidebar-node">
+        <h1><%= link_to "Contact Us", :controller => "contact" %></h1>
+      </div>
     </div>
   </div>
 </div>
