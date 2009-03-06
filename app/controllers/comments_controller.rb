@@ -8,7 +8,7 @@ class CommentsController < ApplicationController
 
     if @comment.save
       flash[:notice] = 'Your comment has been added.'
-      redirect_to :controller => 'episodes', :action => 'show', :id => params[:comment][:episode_id]
+      redirect_to(:controller => 'episodes', :action => 'show', :id => params[:comment][:episode_id])
     end
   end
   
@@ -18,9 +18,9 @@ class CommentsController < ApplicationController
     
     if @comment.destroy
       flash[:notice] = "Comment successfully NUKED."
-      redirect_to :controller => "episodes", :action => "show", :id = @comment.episode
+      redirect_to(:controller => "episodes", :action => "show", :id => @comment.episode)
     else
       flash[:error] = @comment.errors.full_messages.to_sentence
-      redirect_to :controller => "episodes", :action => "show", :id = @comment.episode
+      redirect_to(:controller => "episodes", :action => "show", :id => @comment.episode)
     end
 end
