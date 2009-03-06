@@ -23,4 +23,5 @@ class CommentsController < ApplicationController
       flash[:error] = @comment.errors.full_messages.to_sentence
       redirect_to(:controller => "episodes", :action => "show", :id => @comment.episode)
     end
+  end
 end
