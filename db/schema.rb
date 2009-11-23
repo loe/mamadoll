@@ -9,15 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080728030035) do
+ActiveRecord::Schema.define(:version => 20091123074128) do
 
   create_table "appearances", :force => true do |t|
-    t.integer "person_id",  :limit => 11, :default => 0, :null => false
-    t.integer "episode_id", :limit => 11, :default => 0, :null => false
+    t.integer "person_id",  :default => 0, :null => false
+    t.integer "episode_id", :default => 0, :null => false
   end
 
   create_table "comments", :force => true do |t|
-    t.integer  "episode_id", :limit => 11, :default => 0, :null => false
+    t.integer  "episode_id", :default => 0, :null => false
     t.string   "author"
     t.string   "email"
     t.text     "body"
@@ -49,26 +49,17 @@ ActiveRecord::Schema.define(:version => 20080728030035) do
     t.string  "name"
     t.text    "profile"
     t.string  "image_url"
-    t.integer "image_height", :limit => 11
-    t.integer "image_width",  :limit => 11
+    t.integer "image_height"
+    t.integer "image_width"
     t.string  "permalink"
   end
 
   add_index "people", ["permalink"], :name => "index_people_on_permalink"
 
-  create_table "sessions", :force => true do |t|
-    t.string   "session_id"
-    t.text     "data"
-    t.datetime "updated_at"
-  end
-
-  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
-  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
-
   create_table "slugs", :force => true do |t|
     t.string   "name"
     t.string   "sluggable_type"
-    t.integer  "sluggable_id",   :limit => 11
+    t.integer  "sluggable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
