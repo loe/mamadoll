@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
   
-  before_filter :check_authorization, :except => [ :index, :show ]
+  before_filter :check_authorization, :except => [:index, :show]
+  before_filter :set_cache_control, :only => [:index, :show]
   
   def index
     @pages = Page.find(:all, :order => "title DESC")

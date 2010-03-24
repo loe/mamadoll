@@ -1,6 +1,7 @@
 class PeopleController < ApplicationController
   
-  before_filter :check_authorization, :except => [ :index, :show ]
+  before_filter :check_authorization, :except => [:index, :show]
+  before_filter :set_cache_control, :only => [:index, :show]
   
   def index
     @people = Person.find(:all, :order => "name ASC")

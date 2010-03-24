@@ -22,6 +22,11 @@ class ApplicationController < ActionController::Base
     @page_list = Page.find(:all, :order => "id ASC")
   end
   
+  # Allows pages to be cached by Varnish for up to 1 hour.
+  def set_cache_control
+    expires_in(1.hour, :public => true)
+  end
+  
   # authorization
   helper_method :check_authorization
   def check_authorization

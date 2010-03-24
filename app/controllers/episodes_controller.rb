@@ -1,6 +1,7 @@
 class EpisodesController < ApplicationController
   
-  before_filter :check_authorization, :except => [ :index, :show, :latest ]
+  before_filter :check_authorization, :except => [:index, :show, :latest]
+  before_filter :set_cache_control, :only => [:index, :show, :latest]
   
   def index
     @episodes = Episode.find(:all, :order => "id DESC")
