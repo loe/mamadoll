@@ -3,20 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Life on the Mama Doll: <%=h @page_title %></title>
+  <title>Life on the Mama Doll: <%=h @page_title %></title>
   <meta name="description" value="On Life on the Mama Doll the show we explore the North Coast of the Caribbeam: from the Bahamas and the Florida Keys across Gulf Coast to the Yucatan." />
   
   <meta name="keywords" value="fishing, hunting, cooking, travel, chefs, food, exploring, gulf coast, gulf, coast, exploration, mama doll, mama, doll, Louisiana, Mississippi, Alabama, Florida, Texas, Bahamas, Florida Keys, Keys, Mexico" />
-  <%= javascript_include_tag "swfobject" %>
-	<%= stylesheet_link_tag "mamadoll", :media => "all "%>
 
-	<style type="text/css">
-	#header {
-	  background: url("/images/backgrounds/<%= 1 + rand(7) %>.jpg") repeat top left;
-	}
-	</style>
-	
-	<!--[if lt IE 7.]>
+  <%= stylesheet_link_tag "mamadoll", :media => "all "%>
+
+  <style type="text/css">
+    #header {
+     background: url("/images/backgrounds/<%= 1 + rand(7) %>.jpg") repeat top left;
+   }
+  </style>
+   
+  <!--[if lt IE 7.]>
   <script defer type="text/javascript" src="/javascripts/pngfix.js"></script>
   <![endif]-->
 </head>
@@ -75,13 +75,13 @@
     </div>
   </div>
 </div>
-  
+
 <div id="footer">
   <div id="footer-interior">
     &copy; 2006-<%= Time.now.year %> Lugger Films
   </div>
 </div>
-  
+
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -90,6 +90,6 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 var pageTracker = _gat._getTracker("UA-1702281-2");
 pageTracker._trackPageview();
 </script>
-
+<%= javascript_include_tag "swfobject" %>
 </body>
 </html>
