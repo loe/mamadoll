@@ -2,8 +2,6 @@ class EpisodesController < ApplicationController
   
   before_filter :check_authorization, :except => [ :index, :show, :latest ]
   
-  caches_page :index, :show, :latest
-  
   def index
     @episodes = Episode.find(:all, :order => "id DESC")
     @page_title = "The Episodes"
