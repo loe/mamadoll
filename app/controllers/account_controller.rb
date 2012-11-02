@@ -11,7 +11,7 @@ class AccountController < ApplicationController
 
     elsif request.post?    
 
-      if params[:account][:password] == "f1sh1ng"
+      if false
         session[:authenticated] = true
         redirect_to("/")
       else
