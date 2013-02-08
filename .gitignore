@@ -1,5 +1,7 @@
 .bundle
 .DS_Store
+.env
+.rbenv-version
 config/database.yml
 coverage/*
 log/*

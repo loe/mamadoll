@@ -1,4 +1,9 @@
-source :gemcutter
-gem 'rails', '~> 2.3'
-gem 'pg', '0.9.0'
-gem 'thin'
+source 'http://rubygems.org'
+
+gem 'bundler'
+gem 'rails', '2.3.16'
+gem 'pg'
+
+group :development do
+  gem 'foreman'
+end
