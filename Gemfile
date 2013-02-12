@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'bundler'
-gem 'rails', '2.3.16'
+gem 'rails', '2.3.17'
 gem 'pg'
 gem 'thin'
 
